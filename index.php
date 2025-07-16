@@ -1,5 +1,5 @@
 <?php
-    $title = "Home - ";
+    $title = "Home Care Services - Compassionate Care for Your Loved Ones | ";
     require_once "system/DatabaseConnector.php";
     include "system/inc/head.php";
 ?>
