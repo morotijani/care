@@ -14,19 +14,19 @@
           </a>
           <ul class="nav justify-content-center py-1 pb-sm-2">
             <li class="nav-item">
-              <a class="nav-link py-2 px-3 mx-1" href="#">Classes</a>
+              <a class="nav-link py-2 px-3 mx-1" href="<?= PROOT; ?>">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-2 px-3 mx-1" href="#">Trainers</a>
+              <a class="nav-link py-2 px-3 mx-1" href="<?= PROOT; ?>services">Services</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-2 px-3 mx-1" href="#">Schedule</a>
+              <a class="nav-link py-2 px-3 mx-1" href="<?= PROOT; ?>apply">Apply as a Caregiver</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-2 px-3 mx-1" href="#">Pricing</a>
+              <a class="nav-link py-2 px-3 mx-1" href="#">Request for a Caregiver</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-2 px-3 mx-1" href="#">Contact</a>
+              <a class="nav-link py-2 px-3 mx-1" href="<?= PROOT; ?>contact">Contact</a>
             </li>
           </ul>
         </div>
@@ -43,8 +43,7 @@
             </a>
           </div>
           <p class="nav fs-sm order-sm-1 justify-content-center mb-0">
-            <span class="text-body-secondary">&copy; All rights reserved. Made by</span>
-            <a class="nav-link fw-normal p-0 ms-1" href="https://createx.studio/" target="_blank" rel="noopener">Createx Studio</a>
+            <span class="text-body-secondary">&copy; All rights reserved.</span>
           </p>
         </div>
       </div>
