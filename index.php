@@ -25,13 +25,13 @@
         }'>
           <div class="swiper-wrapper">
             <div class="swiper-slide">
-              <div class="swiper-slide-cover bg-position-top-center" style="background-image: url(<?= PROOT; ?>assets/media/cover.jpg);"></div>
+              <div class="swiper-slide-cover" style="background-image: url(<?= PROOT; ?>assets/media/cover-3.jpg);"></div>
             </div>
             <div class="swiper-slide">
-              <div class="swiper-slide-cover bg-position-top-center" style="background-image: url(<?= PROOT; ?>assets/media/cover.jpg);"></div>
+              <div class="swiper-slide-cover" style="background-image: url(<?= PROOT; ?>assets/media/cover-2.jpg);"></div>
             </div>
             <div class="swiper-slide">
-              <div class="swiper-slide-cover bg-position-top-center" style="background-image: url(<?= PROOT; ?>assets/media/cover.jpg);"></div>
+              <div class="swiper-slide-cover" style="background-image: url(<?= PROOT; ?>assets/media/cover-1.jpg);"></div>
             </div>
           </div>
           <div class="swiper-pagination mb-4"></div>
@@ -48,36 +48,10 @@
                         <a href="apply.php" class="btn btn-outline-light btn-lg mb-3">Apply as Caregiver</a>
             </div>
 
-            <!-- <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-md-start">
-                        <a href="request.php" class="btn btn-primary btn-lg me-sm-3 mb-3">Request Service</a>
-                        <a href="apply.php" class="btn btn-outline-light btn-lg mb-3">Apply as Caregiver</a>
-                    </div> -->
-
-
             </div>
           </div>
         </div>
       </section>
-
-
-
-    <!-- Hero section with parallax effect -->
-    <!-- <section class="position-relative pt-5">
-        <div class="position-absolute top-0 start-0 w-100 h-100 bg-dark" style="opacity: .5;"></div>
-        <div class="position-absolute top-0 start-0 w-100 h-100" style="background-image: url(assets/media/cover.jpg); background-position: center; background-repeat: no-repeat; background-size: cover;"></div>
-        <div class="container position-relative zindex-2 pt-5 pb-md-2 pb-lg-4 pb-xl-5">
-            <div class="row pt-3 pb-2 py-md-3 py-lg-4 py-xl-5">
-                <div class="col-md-6 pt-xl-5 pb-md-5 text-center text-md-start">
-                    <h1 class="display-3 text-white pb-3">Professional Home Care Services</h1>
-                    <p class="fs-lg text-white opacity-70 pb-md-4 mb-4">Providing compassionate care for the elderly, the sick, and children in the comfort of your home.</p>
-                    <div class="d-flex flex-column flex-sm-row justify-content-center justify-content-md-start">
-                        <a href="request.php" class="btn btn-primary btn-lg me-sm-3 mb-3">Request Service</a>
-                        <a href="apply.php" class="btn btn-outline-light btn-lg mb-3">Apply as Caregiver</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
 
     <!-- Services overview -->
     <section class="container py-5 my-md-2 my-lg-4 my-xl-5">
