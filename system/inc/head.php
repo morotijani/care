@@ -24,6 +24,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" media="screen" href="<?= PROOT; ?>assets/css/swiper-bundle.min.css">
+
     <!-- Font icons -->
     <link rel="stylesheet" href="<?= PROOT; ?>assets/icons/around-icons.min.css">
 
@@ -31,7 +34,7 @@
     <link rel="stylesheet" media="screen" href="<?= PROOT; ?>assets/css/theme.min.css">
 
     <!-- Customizer generated styles -->
-    <link rel="stylesheet" href="<?= PROOT; ?>assets/css/levina.css">
+    <link rel="stylesheet" href="<?= PROOT; ?>assets/css/care.css">
 
     <!-- Page loading styles -->
     <style>
