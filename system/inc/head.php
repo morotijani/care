@@ -155,15 +155,7 @@
 </head>
 
 <!-- Body --> 
-<body class="<?= $body_class; ?>" 
-    <?php 
-        if (user_is_logged_in() && $playSound) {
-            echo 'onload="playWelcomeSound()"';
-        } else {
-            echo '';
-        }
-    ?>
->
+<body class="<?= $body_class; ?>">
 
     <!-- Google Tag Manager (noscript) -->
     <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-MB5J878T"
