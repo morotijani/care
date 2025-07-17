@@ -2,19 +2,34 @@
     $title = "About Us - ";
     require_once "system/DatabaseConnector.php";
     include "system/inc/head.php";
+    include "system/inc/nav.php";
 ?>
 
-<!-- Main content -->
-<main class="page-wrapper">
-    <!-- Hero section -->
-    <section class="container pt-5 mt-5">
-        <div class="row pt-md-4 pt-lg-5 pb-xl-3">
-            <div class="col-lg-10 col-xl-8 mx-auto text-center">
-                <h1 class="display-3 pb-3">About Our Home Care Services</h1>
-                <p class="fs-lg pb-3 mb-3">We are dedicated to providing exceptional home care services for the elderly, the sick, and children, ensuring they receive the attention and support they need in the comfort of their own homes.</p>
+<!-- Hero -->
+      <section class="bg-dark position-relative py-5">
+        <div class="d-none d-dark-mode-block position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(255,255,255, .03);"></div>
+        <div class="container position-relative z-2 py-5 mb-4 mb-sm-5" data-bs-theme="dark">
+          <div class="row pb-5 mb-2 mb-sm-0 mb-lg-3">
+            <div class="col-lg-10 col-xl-9">
+
+              <!-- Breadcrumb -->
+              <nav aria-label="breadcrumb">
+                <ol class="pt-lg-3 pb-lg-4 pb-2 breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a href="<?= PROOT; ?>">Home</a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">About us</li>
+                </ol>
+              </nav>
+
+              <h1 class="display-2 pb-2 pb-sm-3">About Our Home Care Services</h1>
+               <p class="fs-lg pb-3 text-body mb-3">We are dedicated to providing exceptional home care services for the elderly, the sick, and children, ensuring they receive the attention and support they need in the comfort of their own homes.</p>
             </div>
+          </div>
         </div>
-    </section>
+      </section>
+
+
 
     <!-- Our mission -->
     <section class="container py-5 my-md-2 my-lg-4">

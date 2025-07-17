@@ -2,19 +2,24 @@
     $title = "Our Services - ";
     require_once "system/DatabaseConnector.php";
     include "system/inc/head.php";
-?>
+        include "system/inc/nav.php";
 
-<!-- Main content -->
-<main class="page-wrapper">
-    <!-- Hero section -->
-    <section class="container pt-5 mt-5">
-        <div class="row pt-md-4 pt-lg-5 pb-xl-3">
-            <div class="col-lg-10 col-xl-8 mx-auto text-center">
-                <h1 class="display-3 pb-3">Our Home Care Services</h1>
-                <p class="fs-lg pb-3 mb-3">We offer a comprehensive range of home care services designed to meet the unique needs of the elderly, the sick, and children. Our professional caregivers are trained to provide compassionate and reliable care.</p>
-            </div>
-        </div>
-    </section>
+?>
+ <!-- Breadcrumb + Services grid -->
+      <section class="container py-5 mt-5 mb-md-3 mb-lg-4 mb-xxl-5">
+
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+          <ol class="pt-lg-3 pb-lg-4 pb-2 breadcrumb">
+            <li class="breadcrumb-item"><a href="<?= PROOT; ?>">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Services</li>
+          </ol>
+        </nav>
+
+        <!-- Page title -->
+        <h1 class="text-center">Our Home Care Services</h1>
+        <p class="text-center fs-lg pb-4 mb-2 mb-lg-3">We offer a comprehensive range of home care services designed to meet the unique needs of the elderly, the sick, and children. Our professional caregivers are trained to provide compassionate and reliable care.</p>
+</section>
 
     <!-- Elderly Care -->
     <section id="elderly" class="container py-5 my-md-2 my-lg-4">

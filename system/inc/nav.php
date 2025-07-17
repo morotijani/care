@@ -26,8 +26,8 @@
             </label>
           </div>
 
-          <a class="btn btn-primary btn-sm fs-sm order-lg-3 d-none d-sm-inline-flex" href="<?= PROOT; ?>apply">
-            Apply as caregiver
+          <a class="btn btn-primary btn-sm fs-sm order-lg-3 d-none d-sm-inline-flex" href="<?= PROOT; ?>request">
+            Request service
           </a>
 
           <!-- Mobile menu toggler (Hamburger) -->
@@ -49,16 +49,16 @@
                 <a class="nav-link" href="<?= PROOT; ?>services">Services</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="<?= PROOT; ?>request">Request service</a>
+                <a class="nav-link" href="<?= PROOT; ?>apply">Apply as caregiver</a>
               </li>
               <li class="nav-item">
                 <a class="nav-link" href="<?= PROOT; ?>contact">Contact us</a>
               </li>
             </ul>
             <div class="d-sm-none p-3 mt-n3">
-              <a class="btn btn-primary w-100 mb-1" href="<?= PROOT; ?>apply">
+              <a class="btn btn-primary w-100 mb-1" href="<?= PROOT; ?>request">
                 <i class="ai-cart fs-xl me-2 ms-n1"></i>
-                Apply as caregiver
+                Request service
               </a>
             </div>
           </nav>

@@ -2,6 +2,8 @@
     $title = "Request Service - Get the Care You Need | ";
     include_once "system/DatabaseConnector.php";
     include_once "system/inc/head.php";
+        include "system/inc/nav.php";
+
 
     // Process service request form submission
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["request_submit"])) {
@@ -26,18 +28,27 @@
     }
 ?>
 
-<!-- Main content -->
-<main class="page-wrapper">
-    <!-- Hero section -->
-    <section class="bg-dark py-5">
-        <div class="container pt-5 pb-5">
-            <div class="row pt-md-4 pb-lg-5">
-                <div class="col-lg-10 col-xl-8 text-center text-lg-start">
-                    <h1 class="display-4 text-light pb-2 mb-4 mb-lg-5">Request Our Services</h1>
-                </div>
+    <section class="bg-dark position-relative py-5">
+        <div class="d-none d-dark-mode-block position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(255,255,255, .03);"></div>
+        <div class="container position-relative z-2 py-5 mb-4 mb-sm-5" data-bs-theme="dark">
+          <div class="row pb-5 mb-2 mb-sm-0 mb-lg-3">
+            <div class="col-lg-10 col-xl-9">
+
+              <!-- Breadcrumb -->
+              <nav aria-label="breadcrumb">
+                <ol class="pt-lg-3 pb-lg-4 pb-2 breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a href="<?= PROOT; ?>">Home</a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">Request</li>
+                </ol>
+              </nav>
+
+              <h1 class="display-2 pb-2 pb-sm-3">Request Our Services</h1>
             </div>
+          </div>
         </div>
-    </section>
+      </section>
 
     <!-- Service request form -->
     <section class="container py-5 my-md-2 my-lg-4">
