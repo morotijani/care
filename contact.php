@@ -2,6 +2,7 @@
     $title = "Contact Us - Get in Touch | ";
     include_once "system/DatabaseConnector.php";
     include_once "system/inc/head.php";
+    include_once "system/inc/nav.php";
 
     // Process contact form submission
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["contact_submit"])) {
@@ -23,10 +24,24 @@
     }
 ?>
 
-<!-- Main content -->
-<main class="page-wrapper">
+<section class="container pt-5 pb-lg-2 pb-xl-4 py-xxl-5 my-5">
+
+        <!-- Breadcrumb-->
+        <nav aria-label="breadcrumb">
+                <ol class="pt-lg-3 pb-lg-4 pb-2 breadcrumb">
+                  <li class="breadcrumb-item">
+                    <a href="<?= PROOT; ?>">Home</a>
+                  </li>
+                  <li class="breadcrumb-item active" aria-current="page">Contact</li>
+                </ol>
+              </nav>
+
+        <!-- Page title -->
+        <h1 class="display-2 pb-2 mb-sm-4 mb-lg-5">Contact Us</h1>
+      </section>
+
     <!-- Hero section -->
-    <section class="bg-dark py-5">
+    <!-- <section class="bg-dark py-5">
         <div class="container pt-5 pb-5">
             <div class="row pt-md-4 pb-lg-5">
                 <div class="col-lg-10 col-xl-8 text-center text-lg-start">
@@ -34,7 +49,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- Contact form + info -->
     <section class="container py-5 my-md-2 my-lg-4">

@@ -28,14 +28,12 @@
     }
 ?>
 
-    <section class="bg-dark position-relative py-5">
-        <div class="d-none d-dark-mode-block position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(255,255,255, .03);"></div>
-        <div class="container position-relative z-2 py-5 mb-4 mb-sm-5" data-bs-theme="dark">
-          <div class="row pb-5 mb-2 mb-sm-0 mb-lg-3">
-            <div class="col-lg-10 col-xl-9">
+    
 
-              <!-- Breadcrumb -->
-              <nav aria-label="breadcrumb">
+      <section class="container pt-5 pb-lg-2 pb-xl-4 py-xxl-5 my-5">
+
+        <!-- Breadcrumb-->
+        <nav aria-label="breadcrumb">
                 <ol class="pt-lg-3 pb-lg-4 pb-2 breadcrumb">
                   <li class="breadcrumb-item">
                     <a href="<?= PROOT; ?>">Home</a>
@@ -44,10 +42,8 @@
                 </ol>
               </nav>
 
-              <h1 class="display-2 pb-2 pb-sm-3">Request Our Services</h1>
-            </div>
-          </div>
-        </div>
+        <!-- Page title -->
+        <h1 class="display-2 pb-2 mb-sm-4 mb-lg-5">Request Our Services</h1>
       </section>
 
     <!-- Service request form -->
