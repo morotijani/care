@@ -35,79 +35,77 @@
             </div>
         </section>
 
+        <!-- Our mission -->
+        <section class="container py-5 my-md-2 my-lg-4">
+            <div class="row align-items-center">
+                <div class="col-md-6 pb-2 pb-md-0 mb-4 mb-md-0">
+                    <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(assets/media/cover.jpg);"></div>
+                </div>
+                <div class="col-md-6">
+                    <div class="ps-md-4 ps-lg-0">
+                        <h2 class="h1 mb-md-4">Our Mission</h2>
+                        <p class="fs-lg">At Care that Feels like Home, we are committed to providing compassionate and professional home health care that enhances the independence, dignity, and well-being of individuals and families in Bismarck, North Dakota. </p>
+                        <p class="fs-lg mb-0">Through personalized services—from skilled nursing and therapy to daily support—we strive to deliver comfort and trust, ensuring that every home feels like the heart of care.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-
-    <!-- Our mission -->
-    <section class="container py-5 my-md-2 my-lg-4">
-        <div class="row align-items-center">
-            <div class="col-md-6 pb-2 pb-md-0 mb-4 mb-md-0">
-                <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(assets/media/cover.jpg);"></div>
-            </div>
-            <div class="col-md-6">
-                <div class="ps-md-4 ps-lg-0">
-                    <h2 class="h1 mb-md-4">Our Mission</h2>
-                    <p class="fs-lg">Our mission is to enhance the quality of life for our clients by providing personalized care services that promote independence, dignity, and well-being. We strive to be the leading provider of home care services, known for our exceptional care, reliability, and compassion.</p>
-                    <p class="fs-lg mb-0">We believe that everyone deserves to receive care in the comfort of their own home, surrounded by familiar settings and loved ones. Our dedicated team works tirelessly to make this possible for all our clients.</p>
+        <!-- Our values -->
+        <section class="container py-5 my-md-2 my-lg-4">
+            <div class="row justify-content-center text-center pb-4 mb-2 mb-lg-3">
+                <div class="col-lg-8 col-xl-7 col-xxl-6">
+                    <h2 class="h1 mb-lg-4">Our Core Values</h2>
+                    <p class="fs-lg text-muted mb-0">These principles guide everything we do and ensure we provide the highest quality of care.</p>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Our values -->
-    <section class="container py-5 my-md-2 my-lg-4">
-        <div class="row justify-content-center text-center pb-4 mb-2 mb-lg-3">
-            <div class="col-lg-8 col-xl-7 col-xxl-6">
-                <h2 class="h1 mb-lg-4">Our Core Values</h2>
-                <p class="fs-lg text-muted mb-0">These principles guide everything we do and ensure we provide the highest quality of care.</p>
-            </div>
-        </div>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
-            <div class="col">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <div class="d-table bg-secondary rounded-3 p-3 mb-4">
-                            <i class="ai-heart d-block h3 text-primary mb-0"></i>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
+                <div class="col">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-table bg-secondary rounded-3 p-3 mb-4">
+                                <i class="ai-heart d-block h3 text-primary mb-0"></i>
+                            </div>
+                            <h3 class="h5 mb-2">Compassion</h3>
+                            <p class="fs-sm mb-0">We treat every client with heartfelt empathy and respect, recognizing the unique challenges they face. Our caregivers are not just skilled professionals—they are warm companions who bring comfort and care into each home.</p>
                         </div>
-                        <h3 class="h5 mb-2">Compassion</h3>
-                        <p class="fs-sm mb-0">We approach each client with genuine care, empathy, and understanding of their unique needs and circumstances.</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-table bg-secondary rounded-3 p-3 mb-4">
+                                <i class="ai-check d-block h3 text-primary mb-0"></i>
+                            </div>
+                            <h3 class="h5 mb-2">Reliability</h3>
+                            <p class="fs-sm mb-0">Families count on us, and we honor that trust by delivering consistent, dependable services. From daily assistance to specialized nursing, our team is there when needed—no compromises.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-table bg-secondary rounded-3 p-3 mb-4">
+                                <i class="ai-star d-block h3 text-primary mb-0"></i>
+                            </div>
+                            <h3 class="h5 mb-2">Excellence</h3>
+                            <p class="fs-sm mb-0">We pursue the highest standards in home health care through continuous learning, quality assurance, and personal dedication. Every touchpoint reflects our commitment to professionalism and top-tier service.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card border-0 shadow-sm h-100">
+                        <div class="card-body">
+                            <div class="d-table bg-secondary rounded-3 p-3 mb-4">
+                                <i class="ai-shield d-block h3 text-primary mb-0"></i>
+                            </div>
+                            <h3 class="h5 mb-2">Integrity</h3>
+                            <p class="fs-sm mb-0">We act with honesty, transparency, and accountability in all we do. Our relationships—with clients, families, and the community—are built on trust and ethical care.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <div class="d-table bg-secondary rounded-3 p-3 mb-4">
-                            <i class="ai-check d-block h3 text-primary mb-0"></i>
-                        </div>
-                        <h3 class="h5 mb-2">Reliability</h3>
-                        <p class="fs-sm mb-0">We are committed to providing consistent, dependable care that our clients and their families can count on.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <div class="d-table bg-secondary rounded-3 p-3 mb-4">
-                            <i class="ai-star d-block h3 text-primary mb-0"></i>
-                        </div>
-                        <h3 class="h5 mb-2">Excellence</h3>
-                        <p class="fs-sm mb-0">We strive for the highest standards in all aspects of our service, from caregiver selection to care delivery.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <div class="d-table bg-secondary rounded-3 p-3 mb-4">
-                            <i class="ai-shield d-block h3 text-primary mb-0"></i>
-                        </div>
-                        <h3 class="h5 mb-2">Integrity</h3>
-                        <p class="fs-sm mb-0">We conduct our business with honesty, transparency, and ethical practices that earn the trust of our clients.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
     <!-- Our team -->
     <section class="container py-5 my-md-2 my-lg-4">

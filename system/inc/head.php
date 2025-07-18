@@ -7,15 +7,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
     
     <!-- SEO meta tags -->
-    <title><?= $title; ?>Lavina . Namibra </title>
+    <title><?= $title; ?></title>
     <meta name="description" content="Lavina - Refer and earn money on Namibra products">
     <meta name="keywords" content="namibra, business, corporate, coworking space, services, creative agency, dashboard, e-commerce, mobile app showcase, product, multipurpose, product landing, shop, software, ui kit, web studio, landing, light and dark mode, refer, earn, points, money, cash, software, creative">
     <meta name="author" content="Namibra Inc.">
 
     <!-- Webmanifest + Favicon / App icons -->
     <link rel="manifest" href="../manifest.json">
-    <link rel="icon" type="image/png" href="<?= PROOT; ?>assets/media/logo/favicon.png" sizes="32x32">
-    <link rel="apple-touch-icon" href="<?= PROOT; ?>assets/media/logo/favicon.png">
+    <link rel="icon" type="image/jpg" href="<?= PROOT; ?>assets/media/logo/logo.jpg" sizes="32x32">
+    <link rel="apple-touch-icon" href="<?= PROOT; ?>assets/media/logo/logo.jpg">
         
     <!-- Theme switcher (color modes) -->
     <script src="<?= PROOT; ?>assets/js/theme-switcher.js"></script>
