@@ -5,27 +5,27 @@
         include "system/inc/nav.php";
 
 ?>
- <!-- Breadcrumb + Services grid -->
-      <section class="container py-5 mt-5 mb-md-3 mb-lg-4 mb-xxl-5">
+    <!-- Breadcrumb + Services grid -->
+    <section class="container py-5 mt-5 mb-md-3 mb-lg-4 mb-xxl-5">
 
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
-          <ol class="pt-lg-3 pb-lg-4 pb-2 breadcrumb">
-            <li class="breadcrumb-item"><a href="<?= PROOT; ?>">Home</a></li>
-            <li class="breadcrumb-item active" aria-current="page">Services</li>
-          </ol>
+            <ol class="pt-lg-3 pb-lg-4 pb-2 breadcrumb">
+                <li class="breadcrumb-item"><a href="<?= PROOT; ?>">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Services</li>
+            </ol>
         </nav>
 
         <!-- Page title -->
         <h1 class="text-center">Our Home Care Services</h1>
         <p class="text-center fs-lg pb-4 mb-2 mb-lg-3">We offer a comprehensive range of home care services designed to meet the unique needs of the elderly, the sick, and children. Our professional caregivers are trained to provide compassionate and reliable care.</p>
-</section>
+    </section>
 
     <!-- Elderly Care -->
     <section id="elderly" class="container py-5 my-md-2 my-lg-4">
         <div class="row align-items-center">
             <div class="col-md-6 pb-2 pb-md-0 mb-4 mb-md-0">
-                <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(assets/media/cover.jpg);"></div>
+                <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/cover-1.jpg); background-size: cover;"></div>
             </div>
             <div class="col-md-6">
                 <div class="ps-md-4 ps-lg-0">
@@ -64,7 +64,7 @@
     <section id="sick" class="container py-5 my-md-2 my-lg-4 border-top">
         <div class="row align-items-center flex-md-row-reverse">
             <div class="col-md-6 pb-2 pb-md-0 mb-4 mb-md-0">
-                <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(assets/media/cover.jpg);"></div>
+                <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/cover-6.jpg); background-size: cover;"></div>
             </div>
             <div class="col-md-6">
                 <div class="pe-md-4 pe-lg-0">
@@ -103,7 +103,7 @@
     <section id="children" class="container py-5 my-md-2 my-lg-4 border-top">
         <div class="row align-items-center">
             <div class="col-md-6 pb-2 pb-md-0 mb-4 mb-md-0">
-                <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(assets/media/cover.jpg);"></div>
+                <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/cover-7.jpg); background-size: cover;"></div>
             </div>
             <div class="col-md-6">
                 <div class="ps-md-4 ps-lg-0">
@@ -162,7 +162,7 @@
                 <div class="card border-0 shadow-sm h-100">
                     <div class="card-body">
                         <div class="d-table bg-secondary rounded-3 p-3 mb-4">
-                            <i class="ai-car d-block h3 text-primary mb-0"></i>
+                            <i class="ai-rocket d-block h3 text-primary mb-0"></i>
                         </div>
                         <h3 class="h5 mb-2">Transportation Services</h3>
                         <p class="fs-sm mb-0">Safe and reliable transportation to medical appointments, social activities, shopping, and other outings to help maintain independence and social connections.</p>
@@ -190,8 +190,8 @@
                 <h2 class="h1 pb-3">Ready to Get Started?</h2>
                 <p class="fs-lg pb-3 mb-3">Contact us today to discuss your care needs and how we can help.</p>
                 <div class="d-flex flex-column flex-sm-row justify-content-center">
-                    <a href="request.php" class="btn btn-primary btn-lg me-sm-3 mb-3">Request Service</a>
-                    <a href="contact.php" class="btn btn-outline-primary btn-lg mb-3">Contact Us</a>
+                    <a href="<?= PROOT; ?>request" class="btn btn-primary btn-lg me-sm-3 mb-3">Request Service</a>
+                    <a href="<?= PROOT; ?>contact" class="btn btn-outline-primary btn-lg mb-3">Contact Us</a>
                 </div>
             </div>
         </div>
