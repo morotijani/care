@@ -6,7 +6,7 @@
             <div class="border-bottom text-center pb-4">
                 <a class="navbar-brand d-inline-flex text-nav py-0 mb-3 mb-md-4" href="index.html">
                     <span class="text-primary flex-shrink-0 me-2">
-                        <img src="<?= PROOT; ?>assets/images/logo.png" class="img-fluid" width="35" height="35" alt="Care" style="border-radius: 5px;">
+                        <img src="<?= PROOT; ?>assets/media/logo/logo.jpg" class="img-fluid" width="35" height="35" alt="Care" style="border-radius: 5px;">
                     </span>
                     <span>Care That Feels Like Home.</span>
                 </a>

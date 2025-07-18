@@ -107,69 +107,67 @@
             </div>
         </section>
 
-    <!-- Our team -->
-    <section class="container py-5 my-md-2 my-lg-4">
-        <div class="row justify-content-center text-center pb-4 mb-2 mb-lg-3">
-            <div class="col-lg-8 col-xl-7 col-xxl-6">
-                <h2 class="h1 mb-lg-4">Our Leadership Team</h2>
-                <p class="fs-lg text-muted mb-0">Meet the dedicated professionals who lead our organization with expertise and passion.</p>
-            </div>
-        </div>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-            <!-- Team member 1 -->
-            <div class="col">
-                <div class="card card-hover border-0 shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <div class="d-inline-block rounded-circle position-relative mb-3" style="width: 120px; height: 120px;">
-                            <img src="assets/media/avatar.png" class="rounded-circle" width="120" alt="Team Member">
+        <!-- Our team -->
+
+        <!-- Team -->
+        <section class="pt-5 mt-2 mt-xl-4 mt-xxl-5">
+            <div class="container pt-3 pt-sm-4 pt-lg-5 mt-xl-2 mt-xxl-3">
+                <div class="fs-sm text-uppercase mb-3">Our team</div>
+                <h2 class="display-6 pb-3 mb-lg-4">Team of professionals</h2>
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+
+                    <!-- Item -->
+                    <div class="col">
+                        <div class="card card-hover border-0 rounded-5 overflow-hidden">
+                            <img src="<?= PROOT; ?>assets/media/team/team-2.JPG" alt="Image">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 opacity-0">
+                                <div class="bg-dark position-absolute top-0 start-0 w-100 h-100 opacity-50"></div>
+                                <div class="card-body d-flex flex-column justify-content-end h-100 position-relative z-2 text-center" data-bs-theme="dark">
+                                    <h3 class="h5 mb-1">Jane Cooper</h3>
+                                    <p class="text-body mb-3">Head of PR department</p>
+                                    <div class="d-flex justify-content-center">
+                                        <a class="btn btn-icon btn-sm btn-light btn-instagram rounded-circle mx-2" href="#" aria-label="Instagram">
+                                            <i class="ai-instagram"></i>
+                                        </a>
+                                        <a class="btn btn-icon btn-sm btn-light btn-facebook rounded-circle mx-2" href="#" aria-label="Facebook">
+                                            <i class="ai-facebook"></i>
+                                        </a>
+                                        <a class="btn btn-icon btn-sm btn-light btn-linkedin rounded-circle mx-2" href="#" aria-label="LinkedIn">
+                                            <i class="ai-linkedin"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <h3 class="h5 mb-1">Dr. Emily Johnson</h3>
-                        <p class="text-muted mb-2">Founder & CEO</p>
-                        <p class="fs-sm mb-0">With over 15 years of experience in healthcare management, Dr. Johnson leads our team with vision and compassion.</p>
+                    </div>
+
+                    <!-- Item -->
+                    <div class="col">
+                        <div class="card card-hover border-0 rounded-5 overflow-hidden">
+                            <img src="<?= PROOT; ?>assets/media/team/team-1.JPG" alt="Image">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 opacity-0">
+                                <div class="bg-dark position-absolute top-0 start-0 w-100 h-100 opacity-50"></div>
+                                <div class="card-body d-flex flex-column justify-content-end h-100 position-relative z-2 text-center" data-bs-theme="dark">
+                                    <h3 class="h5 mb-1">Guy Hawkins</h3>
+                                    <p class="text-body mb-3">Head of marketing</p>
+                                    <div class="d-flex justify-content-center">
+                                        <a class="btn btn-icon btn-sm btn-light btn-facebook rounded-circle mx-2" href="#" aria-label="Facebook">
+                                            <i class="ai-facebook"></i>
+                                        </a>
+                                        <a class="btn btn-icon btn-sm btn-light btn-x rounded-circle mx-2" href="#" aria-label="X">
+                                            <i class="ai-x"></i>
+                                        </a>
+                                        <a class="btn btn-icon btn-sm btn-light btn-linkedin rounded-circle mx-2" href="#" aria-label="LinkedIn">
+                                            <i class="ai-linkedin"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <!-- Team member 2 -->
-            <div class="col">
-                <div class="card card-hover border-0 shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <div class="d-inline-block rounded-circle position-relative mb-3" style="width: 120px; height: 120px;">
-                            <img src="assets/media/avatar.png" class="rounded-circle" width="120" alt="Team Member">
-                        </div>
-                        <h3 class="h5 mb-1">Michael Roberts</h3>
-                        <p class="text-muted mb-2">Operations Director</p>
-                        <p class="fs-sm mb-0">Michael ensures our day-to-day operations run smoothly, maintaining our high standards of care.</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Team member 3 -->
-            <div class="col">
-                <div class="card card-hover border-0 shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <div class="d-inline-block rounded-circle position-relative mb-3" style="width: 120px; height: 120px;">
-                            <img src="assets/media/avatar.png" class="rounded-circle" width="120" alt="Team Member">
-                        </div>
-                        <h3 class="h5 mb-1">Sarah Thompson</h3>
-                        <p class="text-muted mb-2">Head of Caregiver Training</p>
-                        <p class="fs-sm mb-0">Sarah develops our comprehensive training programs, ensuring our caregivers provide exceptional care.</p>
-                    </div>
-                </div>
-            </div>
-            <!-- Team member 4 -->
-            <div class="col">
-                <div class="card card-hover border-0 shadow-sm h-100">
-                    <div class="card-body text-center">
-                        <div class="d-inline-block rounded-circle position-relative mb-3" style="width: 120px; height: 120px;">
-                            <img src="assets/media/avatar.png" class="rounded-circle" width="120" alt="Team Member">
-                        </div>
-                        <h3 class="h5 mb-1">David Wilson</h3>
-                        <p class="text-muted mb-2">Client Relations Manager</p>
-                        <p class="fs-sm mb-0">David ensures our clients receive personalized attention and that their needs are met with care.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
 
     <!-- CTA section -->
     <section class="container py-5 my-md-2 my-lg-4">
