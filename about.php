@@ -39,7 +39,7 @@
         <section class="container py-5 my-md-2 my-lg-4">
             <div class="row align-items-center">
                 <div class="col-md-6 pb-2 pb-md-0 mb-4 mb-md-0">
-                    <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/cover-4.jpg);"></div>
+                    <div class="ratio ratio-16x9 bg-position-right rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/cover-4.jpg); background-size: cover;"></div>
                 </div>
                 <div class="col-md-6">
                     <div class="ps-md-4 ps-lg-0">
@@ -226,7 +226,7 @@
                         <a href="apply.php" class="btn btn-primary btn-lg">Apply Now</a>
                     </div>
                     <div class="col-md-6 col-lg-5">
-                        <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(assets/media/cover.jpg);"></div>
+                        <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/cover-5.jpg); background-size: cover;"></div>
                     </div>
                 </div>
             </div>
