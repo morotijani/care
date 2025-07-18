@@ -5,29 +5,35 @@
     include "system/inc/nav.php";
 ?>
 
-<!-- Hero -->
-      <section class="bg-dark position-relative py-5">
+    <!-- Hero -->
+    <section class="bg-dark position-relative py-5">
         <div class="d-none d-dark-mode-block position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(255,255,255, .03);"></div>
-        <div class="container position-relative z-2 py-5 mb-4 mb-sm-5" data-bs-theme="dark">
-          <div class="row pb-5 mb-2 mb-sm-0 mb-lg-3">
-            <div class="col-lg-10 col-xl-9">
+            <div class="container position-relative z-2 py-5 mb-4 mb-sm-5" data-bs-theme="dark">
+                <div class="row pb-5 mb-2 mb-sm-0 mb-lg-3">
+                    <div class="col-lg-10 col-xl-9">
 
-              <!-- Breadcrumb -->
-              <nav aria-label="breadcrumb">
-                <ol class="pt-lg-3 pb-lg-4 pb-2 breadcrumb">
-                  <li class="breadcrumb-item">
-                    <a href="<?= PROOT; ?>">Home</a>
-                  </li>
-                  <li class="breadcrumb-item active" aria-current="page">About us</li>
-                </ol>
-              </nav>
+                    <!-- Breadcrumb -->
+                        <nav aria-label="breadcrumb">
+                            <ol class="pt-lg-3 pb-lg-4 pb-2 breadcrumb">
+                            <li class="breadcrumb-item">
+                                <a href="<?= PROOT; ?>">Home</a>
+                            </li>
+                            <li class="breadcrumb-item active" aria-current="page">About us</li>
+                            </ol>
+                        </nav>
 
-              <h1 class="display-2 pb-2 pb-sm-3">About Our Home Care Services</h1>
-               <p class="fs-lg pb-3 text-body mb-3">We are dedicated to providing exceptional home care services for the elderly, the sick, and children, ensuring they receive the attention and support they need in the comfort of their own homes.</p>
+                        <h1 class="display-2 pb-2 pb-sm-3">About Our Home Care Services</h1>
+                        <p class="fs-lg text-body">At Care that Feels like Home, we are dedicated to delivering compassionate, high-quality home health care to individuals and families in Bismarck, North Dakota. Our mission is to enhance the quality of life for our clients by supporting their independence, dignity, and well-being in the comfort of their own homes.
+                        <br>
+                        <br>
+                        We offer a full range of services including skilled nursing, personal care, physical and occupational therapy, and homemaker support. Whether you’re recovering from surgery, managing a chronic condition, or seeking daily assistance, our experienced and caring team is here to help.
+                        <br>
+                        <br>
+                        With a strong commitment to professionalism, personalized care, and community connection, we aim to become a trusted home health provider in Bismarck—where care truly feels like home.</p>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </section>
+        </section>
 
 
 
