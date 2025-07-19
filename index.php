@@ -223,6 +223,5 @@
             </div>
         </div>
     </section>
-</main>
 
 <?php include "system/inc/footer.php"; ?>

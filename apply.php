@@ -30,20 +30,19 @@
           <!-- Page content-->
       <section class="container pt-5 pb-lg-2 pb-xl-4 py-xxl-5 my-5">
 
-        <!-- Breadcrumb-->
-        <nav aria-label="breadcrumb">
+            <!-- Breadcrumb-->
+            <nav aria-label="breadcrumb">
                 <ol class="pt-lg-3 pb-lg-4 pb-2 breadcrumb">
-                  <li class="breadcrumb-item">
-                    <a href="<?= PROOT; ?>">Home</a>
-                  </li>
-                  <li class="breadcrumb-item active" aria-current="page">Apply</li>
+                    <li class="breadcrumb-item">
+                        <a href="<?= PROOT; ?>">Home</a>
+                    </li>
+                    <li class="breadcrumb-item active" aria-current="page">Apply</li>
                 </ol>
-              </nav>
+            </nav>
 
-        <!-- Page title -->
-        <h1 class="display-2 pb-2 mb-sm-4 mb-lg-5">Apply as a Caregiver</h1>
+            <!-- Page title -->
+            <h1 class="display-2 pb-2 mb-sm-4 mb-lg-5">Apply as a Caregiver</h1>
       </section>
-
 
     <!-- Application form -->
     <section class="container py-5 my-md-2 my-lg-4">
@@ -162,6 +161,5 @@
             </div>
         </div>
     </section>
-</main>
 
 <?php include_once "system/inc/footer.php"; ?>
