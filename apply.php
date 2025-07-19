@@ -14,15 +14,42 @@
         $service_type = sanitize($_POST["service_type"]);
         $availability = sanitize($_POST["availability"]);
         $message = sanitize($_POST["message"]);
+
         
         // Basic validation
         if (empty($name) || empty($email) || empty($phone) || empty($experience)) {
             $_SESSION["flash_error"] = "Please fill in all required fields.";
+            redirect(PROOT . "apply");
         } else {
             // Here you would typically save to database and/or send email
-            // For now, we'll just show a success message
-            $_SESSION["flash_success"] = "Thank you for your application! We will review your information and contact you soon.";
-            redirect(PROOT . "apply.php");
+            $sql = "
+                INSERT INTO `care_applications`(`application_id`, `application_name`, `application_email`, `application_phone`, `application_experience`, `application_service_type`, `application_availability`, `application_message`) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+            ";
+            $statement = $dbConnection->prepare($sql);
+            $result = $statement->execute([guidv4(), $name, $email, $phone, $experience, $service_type, $availability, $message]);
+            if ($result) {
+                // send email
+                $to = $email;
+                $subject = "Caregiver Application Received";
+                $body = "
+                    <p>
+                        Thank you for your application. We will review your information and contact you soon.
+                        <br><br>
+                        Best regards,
+                        <br>
+                        - Care That Feels Like Home.
+                    </p>
+                ";
+                send_email($name, $to, $subject, $body);
+
+                // For now, we'll just show a success message
+                $_SESSION["flash_success"] = "Thank you for your application! We will review your information and contact you soon.";
+                redirect(PROOT . "apply");
+            } else {
+                $_SESSION["flash_error"] = "Something went wrong...please try again !";
+                redirect(PROOT . "apply");
+            }
         }
     }
 ?>
