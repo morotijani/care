@@ -40,8 +40,8 @@
         <div class="container position-relative z-2 py-lg-3 py-xl-5 my-5">
             <div class="row pt-md-3 py-xxl-5 my-5">
                 <div class="col py-5 mb-md-4 mb-lg-5">
-                    <h1 class="display-1 text-uppercase mb-4">Professional Home Care Services</h1>
-                    <p class="d-block text-body fs-xl pb-2 mb-4 mb-md-5" style="max-width: 500px;">Providing compassionate care for the elderly, the sick, and children in the comfort of your home.</p>
+                    <h1 class="display-1 text-uppercase text-primary mb-4">Care That Feels Like Home</h1>
+                    <p class="d-block fs-xl pb-2 mb-4 mb-md-5" style="max-width: 500px;">Providing compassionate care for the elderly, the sick, and children in the comfort of your home.</p>
                     <div class="position-relative d-inline-flex align-items-center">
                         <a href="<?= PROOT; ?>request" class="btn btn-primary btn-lg me-sm-3 mb-3">Request Service</a>
                         <a href="<?= PROOT; ?>apply" class="btn btn-outline-light btn-lg mb-3">Apply as Caregiver</a>

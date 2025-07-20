@@ -173,10 +173,10 @@
                                     <h3 class="h5 mb-1">Dr. Abdul Rahman Dauda</h3>
                                     <p class="text-body mb-3">C.E.O</p>
                                     <div class="d-flex justify-content-center">
-                                        <a class="btn btn-icon btn-sm btn-light btn-instagram rounded-circle mx-2" href="#" aria-label="Instagram">
+                                        <a class="btn btn-icon btn-sm btn-light btn-instagram rounded-circle mx-2" href="https://www.instagram.com/alfaishappy?igsh=MXdxbm1kZTUxd3h2aQ==" aria-label="Instagram">
                                             <i class="ai-instagram"></i>
                                         </a>
-                                        <a class="btn btn-icon btn-sm btn-light btn-facebook rounded-circle mx-2" href="#" aria-label="Facebook">
+                                        <a class="btn btn-icon btn-sm btn-light btn-facebook rounded-circle mx-2" href="https://www.facebook.com/share/1CChPBoFZo/?mibextid=wwXIfr" aria-label="Facebook">
                                             <i class="ai-facebook"></i>
                                         </a>
                                         <a class="btn btn-icon btn-sm btn-light btn-linkedin rounded-circle mx-2" href="#" aria-label="LinkedIn">
