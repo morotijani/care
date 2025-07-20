@@ -8,9 +8,9 @@
     
     <!-- SEO meta tags -->
     <title><?= $title; ?></title>
-    <meta name="description" content="Lavina - Refer and earn money on Namibra products">
-    <meta name="keywords" content="namibra, business, corporate, coworking space, services, creative agency, dashboard, e-commerce, mobile app showcase, product, multipurpose, product landing, shop, software, ui kit, web studio, landing, light and dark mode, refer, earn, points, money, cash, software, creative">
-    <meta name="author" content="Namibra Inc.">
+    <meta name="description" content="Care That Feels Like Home Corporation - dedicated to delivering compassionate, high-quality home health care to individuals and families in Bismarck, North Dakota">
+    <meta name="keywords" content="Homecare, nursing, elderly, children, sick">
+    <meta name="author" content="Care That Feels Like Home Corporation.">
 
     <!-- Webmanifest + Favicon / App icons -->
     <link rel="manifest" href="../manifest.json">
