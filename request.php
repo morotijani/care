@@ -20,7 +20,7 @@
         // Basic validation
         if (empty($name) || empty($email) || empty($phone) || empty($service_type)) {
             $_SESSION["flash_error"] = "Please fill in all required fields.";
-            redirect(PROOT . "request.php");
+            redirect(PROOT . "request");
         } else {
             // Here you would typically save to database and/or send email
              $sql = "
@@ -46,7 +46,10 @@
 
                 // For now, we'll just show a success message
                 $_SESSION["flash_success"] = "Thank you for your service request! We will contact you shortly to discuss your care needs.";
-                redirect(PROOT . "request.php");
+                redirect(PROOT . "request");
+            } else {
+                $_SESSION["flash_error"] = "Something went wrong...please try again !";
+                redirect(PROOT . "request");
             }
         }
     }
