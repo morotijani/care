@@ -1,8 +1,8 @@
 <?php
-    $title = "Request Service - Get the Care You Need | ";
     include_once "system/DatabaseConnector.php";
+    $title = "Request Service - Get the Care You Need | ";
     include_once "system/inc/head.php";
-        include "system/inc/nav.php";
+    include "system/inc/nav.php";
 
 
     // Process service request form submission
@@ -14,6 +14,7 @@
         $care_for = sanitize($_POST["care_for"]);
         $start_date = sanitize($_POST["start_date"]);
         $frequency = sanitize($_POST["frequency"]);
+        $hours = sanitize($_POST["hours"]);
         $message = sanitize($_POST["message"]);
         
         // Basic validation
@@ -23,18 +24,18 @@
         } else {
             // Here you would typically save to database and/or send email
              $sql = "
-                INSERT INTO `care_service_requests`(`request_id`, `request_service_type`, `request_care_for`, `request_start_date`, `request_frequency`, `request_hours`, `request_special_requirements`)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO `care_service_requests`(`request_id`, `request_name`, `request_email`, `request_phone`, `request_service_type`, `request_care_for`, `request_start_date`, `request_frequency`, `request_hours`, `request_special_requirements`)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ";
             $statement = $dbConnection->prepare($sql);
-            $result = $statement->execute([guidv4(), $name, $email, $phone, $experience, $service_type, $availability, $message]);
+            $result = $statement->execute([guidv4(), $name, $email, $phone, $service_type, $care_for, $start_date, $frequency, $hours, $message]);
             if ($result) {
                 // send email
                 $to = $email;
-                $subject = "Caregiver Application Received";
+                $subject = "Caregiver Request Received";
                 $body = "
                     <p>
-                        Thank you for your application. We will review your information and contact you soon.
+                        Thank you for your request. We will review your information and contact you soon.
                         <br><br>
                         Best regards,
                         <br>

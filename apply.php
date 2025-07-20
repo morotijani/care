@@ -1,6 +1,6 @@
 <?php
-    $title = "Apply as Caregiver - Join Our Team | ";
     include_once "system/DatabaseConnector.php";
+    $title = "Apply as Caregiver - Join Our Team | ";
     include_once "system/inc/head.php";
     include_once "system/inc/nav.php";
     
@@ -14,7 +14,6 @@
         $service_type = sanitize($_POST["service_type"]);
         $availability = sanitize($_POST["availability"]);
         $message = sanitize($_POST["message"]);
-
         
         // Basic validation
         if (empty($name) || empty($email) || empty($phone) || empty($experience)) {
