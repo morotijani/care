@@ -170,8 +170,8 @@
                             <div class="position-absolute top-0 start-0 w-100 h-100 opacity-0">
                                 <div class="bg-dark position-absolute top-0 start-0 w-100 h-100 opacity-50"></div>
                                 <div class="card-body d-flex flex-column justify-content-end h-100 position-relative z-2 text-center" data-bs-theme="dark">
-                                    <h3 class="h5 mb-1">Jane Cooper</h3>
-                                    <p class="text-body mb-3">Head of PR department</p>
+                                    <h3 class="h5 mb-1">Dr. Abdul Rahman Dauda</h3>
+                                    <p class="text-body mb-3">C.E.O</p>
                                     <div class="d-flex justify-content-center">
                                         <a class="btn btn-icon btn-sm btn-light btn-instagram rounded-circle mx-2" href="#" aria-label="Instagram">
                                             <i class="ai-instagram"></i>
@@ -189,7 +189,7 @@
                     </div>
 
                     <!-- Item -->
-                    <div class="col">
+                    <!-- <div class="col">
                         <div class="card card-hover border-0 rounded-5 overflow-hidden">
                             <img src="<?= PROOT; ?>assets/media/team/team-1.JPG" alt="Image">
                             <div class="position-absolute top-0 start-0 w-100 h-100 opacity-0">
@@ -211,7 +211,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </section>
