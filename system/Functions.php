@@ -179,7 +179,7 @@
 	        $fn = $name;
 	        $to = $to;
 	        $from = MAIL_EMAIL;
-	        $from_name = 'Levina, Namibra.io 🤞';
+	        $from_name = 'Care That Feels Like Home';
 	        $subject = $subject;
 	        $body = $body;
 
@@ -190,8 +190,8 @@
 	        $mail->SMTPAuth = true;
 
 	        $mail->SMTPSecure = 'ssl'; 
-	        $mail->Host = 'smtp.garypie.com';
-	        $mail->Port = 465;  
+	        $mail->Host = MAIL_HOST;
+	        $mail->Port = MAIL_PORT;  
 	        $mail->Username = $from;
 	        $mail->Password = MAIL_KEY; 
 
