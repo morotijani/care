@@ -23,8 +23,8 @@
         } else {
             // Here you would typically save to database and/or send email
              $sql = "
-                INSERT INTO `care_applications`(`application_id`, `application_name`, `application_email`, `application_phone`, `application_experience`, `application_service_type`, `application_availability`, `application_message`) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO `care_service_requests`(`request_id`, `request_service_type`, `request_care_for`, `request_start_date`, `request_frequency`, `request_hours`, `request_special_requirements`)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
             ";
             $statement = $dbConnection->prepare($sql);
             $result = $statement->execute([guidv4(), $name, $email, $phone, $experience, $service_type, $availability, $message]);
