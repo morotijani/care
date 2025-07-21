@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jul 20, 2025 at 07:11 PM
+-- Generation Time: Jul 21, 2025 at 04:33 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -35,7 +35,7 @@ CREATE TABLE `care_applications` (
   `application_phone` varchar(20) NOT NULL,
   `application_experience` varchar(50) NOT NULL,
   `application_service_type` varchar(50) NOT NULL,
-  `availability` varchar(50) NOT NULL,
+  `application_availability` varchar(50) NOT NULL,
   `application_message` text DEFAULT NULL,
   `application_status` enum('pending','reviewed','approved','rejected') DEFAULT 'pending',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
@@ -143,6 +143,7 @@ CREATE TABLE `care_service_requests` (
   `request_frequency` varchar(50) NOT NULL,
   `request_hours` varchar(50) DEFAULT NULL,
   `request_status` enum('pending','approved','assigned','completed','cancelled') DEFAULT 'pending',
+  `request_assigned_to` varchar(100) DEFAULT NULL,
   `request_special_requirements` text DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -152,8 +153,8 @@ CREATE TABLE `care_service_requests` (
 -- Dumping data for table `care_service_requests`
 --
 
-INSERT INTO `care_service_requests` (`id`, `request_id`, `request_client_id`, `request_name`, `request_email`, `request_phone`, `request_service_type`, `request_care_for`, `request_start_date`, `request_frequency`, `request_hours`, `request_status`, `request_special_requirements`, `created_at`, `updated_at`) VALUES
-(1, '63940ddb-fda0-48f7-b731-24d3e4cc8133', NULL, 'hamza hamidu', 'tjhackx111@gmail.com', '0244512130', 'Sick Care', 'Parent', '2025-12-31', 'Daily', '12', 'pending', 'nothing new', '2025-07-20 16:02:48', '2025-07-20 16:02:48');
+INSERT INTO `care_service_requests` (`id`, `request_id`, `request_client_id`, `request_name`, `request_email`, `request_phone`, `request_service_type`, `request_care_for`, `request_start_date`, `request_frequency`, `request_hours`, `request_status`, `request_assigned_to`, `request_special_requirements`, `created_at`, `updated_at`) VALUES
+(1, '63940ddb-fda0-48f7-b731-24d3e4cc8133', NULL, 'hamza hamidu', 'tjhackx111@gmail.com', '0244512130', 'Sick Care', 'Parent', '2025-12-31', 'Daily', '12', 'assigned', NULL, 'nothing new', '2025-07-20 16:02:48', '2025-07-21 14:13:29');
 
 -- --------------------------------------------------------
 
@@ -178,6 +179,13 @@ CREATE TABLE `care_users` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `care_users`
+--
+
+INSERT INTO `care_users` (`id`, `user_id`, `user_fullname`, `user_email`, `user_phone`, `user_password`, `user_type`, `user_status`, `user_profile_image`, `user_address`, `user_city`, `user_state`, `user_zip_code`, `created_at`, `updated_at`) VALUES
+(1, '901a72fc-er32-4770-a78d-6f33c6d6a55c', 'nuhu inusah', 'admin@admin.com', NULL, '$2y$10$WKV/v9cSvwKwGmJU/P48ouPcCXuOm5eAZ7JEOzXWKzcjidWUj57eu', 'admin', 'active', NULL, NULL, NULL, NULL, NULL, '2025-07-21 12:42:20', '2025-07-21 12:42:20');
 
 --
 -- Indexes for dumped tables
@@ -286,7 +294,7 @@ ALTER TABLE `care_service_requests`
 -- AUTO_INCREMENT for table `care_users`
 --
 ALTER TABLE `care_users`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
