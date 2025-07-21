@@ -11,17 +11,14 @@
         $applicationId = $_POST['application_id'];
         $newStatus = $_POST['status'];
         
-        $updateQuery = "UPDATE care_applications SET status = ? WHERE id = ?";
+        $updateQuery = "UPDATE care_applications SET application_status = ? WHERE id = ?";
         $stmt = $dbConnection->prepare($updateQuery);
-        $stmt->bind_param("si", $newStatus, $applicationId);
         
-        if ($stmt->execute()) {
+        if ($stmt->execute([$newStatus, $applicationId])) {
             echo "<div class='alert alert-success'>Status updated successfully!</div>";
         } else {
             echo "<div class='alert alert-danger'>Error updating status: " . $dbConnection->error . "</div>";
         }
-        
-        $stmt->close();
     }
 
     // Pagination setup

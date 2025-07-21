@@ -11,17 +11,14 @@
         $requestId = $_POST['request_id'];
         $newStatus = $_POST['status'];
         
-        $updateQuery = "UPDATE care_service_requests SET status = ? WHERE id = ?";
+        $updateQuery = "UPDATE care_service_requests SET request_status = ? WHERE id = ?";
         $stmt = $dbConnection->prepare($updateQuery);
-        $stmt->bind_param("si", $newStatus, $requestId);
         
-        if ($stmt->execute()) {
+        if ($stmt->execute([$newStatus, $requestId])) {
             echo "<div class='alert alert-success'>Status updated successfully!</div>";
         } else {
             echo "<div class='alert alert-danger'>Error updating status: " . $dbConnection->error . "</div>";
         }
-        
-        $stmt->close();
     }
 
     // Pagination setup
@@ -127,8 +124,8 @@
                                                             <p><strong>Hours:</strong> <?php echo $row['request_hours']; ?></p>
                                                             <p><strong>Status:</strong> <?php echo ucfirst($row['request_status']); ?></p>
                                                             <p><strong>Date Requested:</strong> <?php echo date('M d, Y', strtotime($row['created_at'])); ?></p>
-                                                            <?php if (!empty($row['assigned_to'])): ?>
-                                                                <p><strong>Assigned To:</strong> <?php echo htmlspecialchars($row['assigned_to']); ?></p>
+                                                            <?php if (!empty($row['request_assigned_to'])): ?>
+                                                                <p><strong>Assigned To:</strong> <?php echo htmlspecialchars($row['request_assigned_to']); ?></p>
                                                             <?php endif; ?>
                                                         </div>
                                                     </div>
@@ -165,8 +162,8 @@
                                                             </select>
                                                         </div>
                                                         <div class="mb-3" id="assignedToField<?php echo $row['id']; ?>" style="display: <?php echo $row['request_status'] == 'assigned' ? 'block' : 'none'; ?>">
-                                                            <label for="assigned_to" class="form-label">Assigned To</label>
-                                                            <input type="text" name="assigned_to" class="form-control" value="<?php echo htmlspecialchars($row['assigned_to']); ?>">
+                                                            <label for="request_assigned_to" class="form-label">Assigned To</label>
+                                                            <input type="text" name="request_assigned_to" class="form-control" value="<?php echo htmlspecialchars($row['request_assigned_to']); ?>">
                                                         </div>
                                                     </div>
                                                     <div class="modal-footer">
