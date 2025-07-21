@@ -12,14 +12,14 @@
     $offset = ($page - 1) * $limit;
 
     // Get total records
-    $totalQuery = "SELECT COUNT(*) as total FROM contacts";
-    $totalResult = $conn->query($totalQuery);
-    $totalRecords = $totalResult->fetch_assoc()['total'];
+    $totalQuery = "SELECT COUNT(*) as total FROM care_contact_messages";
+    $totalResult = $dbConnection->query($totalQuery);
+    $totalRecords = $totalResult->fetchAll()[0]['total'];
     $totalPages = ceil($totalRecords / $limit);
 
     // Get contacts with pagination
-    $query = "SELECT * FROM contacts ORDER BY id DESC LIMIT $offset, $limit";
-    $result = $conn->query($query);
+    $query = "SELECT * FROM care_contact_messages ORDER BY id DESC LIMIT $offset, $limit";
+    $result = $dbConnection->query($query);
 ?>
 
 <div class="card">
@@ -44,14 +44,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if ($result && $result->num_rows > 0): ?>
-                        <?php while ($row = $result->fetch_assoc()): ?>
+                    <?php if ($result && $result->rowCount() > 0): ?>
+                        <?php foreach ($result->fetchAll() as $row): ?>
                             <tr>
                                 <td><?php echo $row['id']; ?></td>
-                                <td><?php echo htmlspecialchars($row['name']); ?></td>
-                                <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                <td><?php echo htmlspecialchars($row['phone']); ?></td>
-                                <td><?php echo htmlspecialchars($row['subject']); ?></td>
+                                <td><?php echo htmlspecialchars($row['message_name']); ?></td>
+                                <td><?php echo htmlspecialchars($row['message_email']); ?></td>
+                                <td><?php echo htmlspecialchars($row['message_phone']); ?></td>
+                                <td><?php echo htmlspecialchars($row['message_subject']); ?></td>
                                 <td>
                                     <button type="button" class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#messageModal<?php echo $row['id']; ?>">
                                         View Message
@@ -62,11 +62,11 @@
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title">Message from <?php echo htmlspecialchars($row['name']); ?></h5>
+                                                    <h5 class="modal-title">Message from <?php echo htmlspecialchars($row['message_name']); ?></h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                 </div>
                                                 <div class="modal-body">
-                                                    <p><?php echo nl2br(htmlspecialchars($row['message'])); ?></p>
+                                                    <p><?php echo nl2br(htmlspecialchars($row['message_message'])); ?></p>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -77,7 +77,7 @@
                                 </td>
                                 <td><?php echo date('M d, Y', strtotime($row['created_at'])); ?></td>
                             </tr>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
                             <td colspan="7" class="text-center">No contacts found</td>

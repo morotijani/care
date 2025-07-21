@@ -55,7 +55,7 @@ if ($reqStatusResult) {
                 </div>
             </div>
             <div class="card-footer d-flex align-items-center justify-content-between">
-                <a href="contacts.php" class="text-white text-decoration-none">View Details</a>
+                <a href="<?= PROOT;?>admin/contacts" class="text-white text-decoration-none">View Details</a>
                 <i class="fas fa-arrow-circle-right text-white"></i>
             </div>
         </div>
@@ -73,7 +73,7 @@ if ($reqStatusResult) {
                 </div>
             </div>
             <div class="card-footer d-flex align-items-center justify-content-between">
-                <a href="applications.php" class="text-white text-decoration-none">View Details</a>
+                <a href="<?= PROOT;?>admin/applications" class="text-white text-decoration-none">View Details</a>
                 <i class="fas fa-arrow-circle-right text-white"></i>
             </div>
         </div>
@@ -91,7 +91,7 @@ if ($reqStatusResult) {
                 </div>
             </div>
             <div class="card-footer d-flex align-items-center justify-content-between">
-                <a href="requests.php" class="text-white text-decoration-none">View Details</a>
+                <a href="<?= PROOT;?>admin/requests" class="text-white text-decoration-none">View Details</a>
                 <i class="fas fa-arrow-circle-right text-white"></i>
             </div>
         </div>
