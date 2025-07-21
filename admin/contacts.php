@@ -6,6 +6,8 @@
     include 'includes/header.php';
     include 'includes/sidebar.php';
 
+    // dnd($_SERVER['PHP_SELF']);
+
     // Pagination setup
     $limit = 10; // Records per page
     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;

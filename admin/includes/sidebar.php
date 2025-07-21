@@ -4,22 +4,22 @@
                     <h4 class="text-center mb-4">Admin Panel</h4>
                     <ul class="nav flex-column">
                         <li class="nav-item mb-2">
-                            <a href="dashboard" class="nav-link <?php echo PROOT  . 'admin/dashboard' ? 'active' : ''; ?>">
+                            <a href="dashboard" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : ''; ?>">
                                 <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item mb-2">
-                            <a href="contacts" class="nav-link <?php echo PROOT  . 'admin/contacts' ? 'active' : ''; ?>">
+                            <a href="contacts" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'contacts.php' ? 'active' : ''; ?>">
                                 <i class="fas fa-address-book me-2"></i> Contacts
                             </a>
                         </li>
                         <li class="nav-item mb-2">
-                            <a href="applications" class="nav-link <?php echo PROOT  . 'admin/applications' ? 'active' : ''; ?>">
+                            <a href="applications" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'applications.php' ? 'active' : ''; ?>">
                                 <i class="fas fa-file-alt me-2"></i> Applications
                             </a>
                         </li>
                         <li class="nav-item mb-2">
-                            <a href="requests" class="nav-link <?php echo PROOT  . 'admin/requests' ? 'active' : ''; ?>">
+                            <a href="requests" class="nav-link <?php echo basename($_SERVER['PHP_SELF']) == 'requests.php' ? 'active' : ''; ?>">
                                 <i class="fas fa-tasks me-2"></i> Requests
                             </a>
                         </li>
