@@ -4,27 +4,27 @@
                     <h4 class="text-center mb-4">Admin Panel</h4>
                     <ul class="nav flex-column">
                         <li class="nav-item mb-2">
-                            <a href="dashboard.php" class="nav-link <?php echo PROOT  . 'admin/dashboard.php' ? 'active' : ''; ?>">
+                            <a href="dashboard" class="nav-link <?php echo PROOT  . 'admin/dashboard' ? 'active' : ''; ?>">
                                 <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item mb-2">
-                            <a href="contacts.php" class="nav-link <?php echo PROOT  . 'admin/contacts.php' ? 'active' : ''; ?>">
+                            <a href="contacts" class="nav-link <?php echo PROOT  . 'admin/contacts' ? 'active' : ''; ?>">
                                 <i class="fas fa-address-book me-2"></i> Contacts
                             </a>
                         </li>
                         <li class="nav-item mb-2">
-                            <a href="applications.php" class="nav-link <?php echo PROOT  . 'admin/applications.php' ? 'active' : ''; ?>">
+                            <a href="applications" class="nav-link <?php echo PROOT  . 'admin/applications' ? 'active' : ''; ?>">
                                 <i class="fas fa-file-alt me-2"></i> Applications
                             </a>
                         </li>
                         <li class="nav-item mb-2">
-                            <a href="requests.php" class="nav-link <?php echo PROOT  . 'admin/requests.php' ? 'active' : ''; ?>">
+                            <a href="requests" class="nav-link <?php echo PROOT  . 'admin/requests' ? 'active' : ''; ?>">
                                 <i class="fas fa-tasks me-2"></i> Requests
                             </a>
                         </li>
                         <li class="nav-item mt-4">
-                            <a href="logout.php" class="nav-link text-danger">
+                            <a href="logout" class="nav-link text-danger">
                                 <i class="fas fa-sign-out-alt me-2"></i> Logout
                             </a>
                         </li>

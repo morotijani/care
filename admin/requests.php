@@ -11,7 +11,7 @@
         $requestId = $_POST['request_id'];
         $newStatus = $_POST['status'];
         
-        $updateQuery = "UPDATE requests SET status = ? WHERE id = ?";
+        $updateQuery = "UPDATE care_service_requests SET status = ? WHERE id = ?";
         $stmt = $dbConnection->prepare($updateQuery);
         $stmt->bind_param("si", $newStatus, $requestId);
         
@@ -34,13 +34,13 @@
     $whereClause = $statusFilter ? "WHERE status = '$statusFilter'" : "";
 
     // Get total records
-    $totalQuery = "SELECT COUNT(*) as total FROM requests $whereClause";
+    $totalQuery = "SELECT COUNT(*) as total FROM care_service_requests $whereClause";
     $totalResult = $dbConnection->query($totalQuery);
-    $totalRecords = $totalResult->fetch_assoc()['total'];
+    $totalRecords = $totalResult->fetchAll()[0]['total'];
     $totalPages = ceil($totalRecords / $limit);
 
     // Get requests with pagination and filtering
-    $query = "SELECT * FROM requests $whereClause ORDER BY id DESC LIMIT $offset, $limit";
+    $query = "SELECT * FROM care_service_requests $whereClause ORDER BY id DESC LIMIT $offset, $limit";
     $result = $dbConnection->query($query);
 ?>
 
@@ -77,22 +77,22 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <?php if ($result && $result->num_rows > 0): ?>
-                        <?php while ($row = $result->fetch_assoc()): ?>
+                    <?php if ($result && $result->rowCount() > 0): ?>
+                        <?php foreach ($result->fetchAll() as $row): ?>
                             <tr>
                                 <td><?php echo $row['id']; ?></td>
-                                <td><?php echo htmlspecialchars($row['name']); ?></td>
-                                <td><?php echo htmlspecialchars($row['email']); ?></td>
-                                <td><?php echo htmlspecialchars($row['phone']); ?></td>
-                                <td><?php echo htmlspecialchars($row['request_type']); ?></td>
+                                <td><?php echo htmlspecialchars($row['request_name']); ?></td>
+                                <td><?php echo htmlspecialchars($row['request_email']); ?></td>
+                                <td><?php echo htmlspecialchars($row['request_phone']); ?></td>
+                                <td><?php echo htmlspecialchars($row['request_service_type']); ?></td>
                                 <td>
                                     <span class="badge bg-<?php 
-                                        echo $row['status'] == 'pending' ? 'warning' : 
-                                            ($row['status'] == 'approved' ? 'info' : 
-                                                ($row['status'] == 'assigned' ? 'primary' : 
-                                                    ($row['status'] == 'completed' ? 'success' : 'danger'))); 
+                                        echo $row['request_status'] == 'pending' ? 'warning' : 
+                                            ($row['request_status'] == 'approved' ? 'info' : 
+                                                ($row['request_status'] == 'assigned' ? 'primary' : 
+                                                    ($row['request_status'] == 'completed' ? 'success' : 'danger'))); 
                                     ?>">
-                                        <?php echo ucfirst($row['status']); ?>
+                                        <?php echo ucfirst($row['request_status']); ?>
                                     </span>
                                 </td>
                                 <td><?php echo date('M d, Y', strtotime($row['created_at'])); ?></td>
@@ -176,7 +176,7 @@
                                     </div>
                                 </td>
                             </tr>
-                        <?php endwhile; ?>
+                        <?php endforeach; ?>
                     <?php else: ?>
                         <tr>
                             <td colspan="8" class="text-center">No requests found</td>
