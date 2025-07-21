@@ -8,35 +8,35 @@
     include 'includes/sidebar.php'; 
 
     // Get counts for dashboard
-    $contactsQuery = "SELECT COUNT(*) as count FROM contacts";
-    $applicationsQuery = "SELECT COUNT(*) as count FROM applications";
-    $requestsQuery = "SELECT COUNT(*) as count FROM requests";
+    $contactsQuery = "SELECT COUNT(*) as count FROM care_contact_messages";
+    $applicationsQuery = "SELECT COUNT(*) as count FROM care_applications";
+    $requestsQuery = "SELECT COUNT(*) as count FROM care_service_requests";
 
     $contactsResult =$dbConnection->query($contactsQuery);
     $applicationsResult =$dbConnection->query($applicationsQuery);
     $requestsResult =$dbConnection->query($requestsQuery);
 
-    $contactsCount = ($contactsResult) ? $contactsResult->fetch_assoc()['count'] : 0;
-    $applicationsCount = ($applicationsResult) ? $applicationsResult->fetch_assoc()['count'] : 0;
-    $requestsCount = ($requestsResult) ? $requestsResult->fetch_assoc()['count'] : 0;
+    $contactsCount = ($contactsResult) ? $contactsResult->rowCount() : 0;
+    $applicationsCount = ($applicationsResult) ? $applicationsResult->rowCount() : 0;
+    $requestsCount = ($requestsResult) ? $requestsResult->rowCount() : 0;
 
     // Get status counts for applications
-    $appStatusQuery = "SELECT status, COUNT(*) as count FROM applications GROUP BY status";
+    $appStatusQuery = "SELECT application_status, COUNT(*) as count FROM care_applications GROUP BY application_status";
     $appStatusResult =$dbConnection->query($appStatusQuery);
     $appStatus = [];
     if ($appStatusResult) {
-        while ($row = $appStatusResult->fetch_assoc()) {
-            $appStatus[$row['status']] = $row['count'];
+        while ($row = $appStatusResult->fetchAll()) {
+            $appStatus[$row['application_status']] = $row['count'];
         }
     }
 
 // Get status counts for requests
-$reqStatusQuery = "SELECT status, COUNT(*) as count FROM requests GROUP BY status";
+$reqStatusQuery = "SELECT request_status, COUNT(*) as count FROM care_service_requests GROUP BY request_status";
 $reqStatusResult =$dbConnection->query($reqStatusQuery);
 $reqStatus = [];
 if ($reqStatusResult) {
-    while ($row = $reqStatusResult->fetch_assoc()) {
-        $reqStatus[$row['status']] = $row['count'];
+    while ($row = $reqStatusResult->fetchAll()) {
+        $reqStatus[$row['request_status']] = $row['count'];
     }
 }
 ?>
