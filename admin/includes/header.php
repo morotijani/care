@@ -1,15 +1,3 @@
-<?php
-session_start();
-
-// Check if user is logged in
-if (!isset($_SESSION['admin_id'])) {
-    header("Location: index.php");
-    exit();
-}
-
-// Include database connection
-include 'db_connection.php';
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
