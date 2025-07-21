@@ -1,7 +1,7 @@
 <?php
 
 // Include database connection
-include_once "system/DatabaseConnector.php";
+include_once "../system/DatabaseConnector.php";
 
 // Check if already logged in
 if (isset($_SESSION['admin_id'])) {
@@ -22,7 +22,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         // Query to check user credentials
         $sql = "SELECT id, name, username, password FROM admin WHERE username = ?";
-        $stmt = $conn->prepare($sql);
+        $stmt = $dbConnection->prepare($sql);
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -49,7 +49,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     }
 }
 
-$conn->close();
 ?>
 
 <!DOCTYPE html>
@@ -84,7 +83,7 @@ $conn->close();
 <body>
     <div class="login-container">
         <div class="login-logo">
-            <h2>Care Admin</h2>
+            <h2>Care that Feels like Home - Admin</h2>
             <p class="text-muted">Login to access dashboard</p>
         </div>
         

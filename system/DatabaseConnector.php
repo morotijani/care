@@ -19,30 +19,31 @@
     }
     session_start();
 
-    if (isset($_SESSION['LVNUser'])) {
-        $user_id = $_SESSION['LVNUser'];
-        $data = array($user_id);
+    if (isset($_SESSION['CTFLHADMIN'])) {
+        $user_id = $_SESSION['CTFLHADMIN'];
+        $data = array($user_id, 'admin');
         $sql = "
-            SELECT * FROM levina_users 
+            SELECT * FROM care_users 
             WHERE user_id = ? 
+            AND user_type = ?
             LIMIT 1
         ";
         $statement = $dbConnection->prepare($sql);
         $statement->execute($data);
         if ($statement->rowCount() > 0) {
-            $user_data = $statement->fetchAll();
-            $user_data = $user_data[0];
+            $admin_data = $statement->fetchAll();
+            $admin_data = $admin_data[0];
 
-            $fn = explode(' ', $user_data['user_fullname']);
-            $user_data['first'] = ucwords($fn[0]);
-            $user_data['last'] = '';
+            $fn = explode(' ', $admin_data['user_fullname']);
+            $admin_data['first'] = ucwords($fn[0]);
+            $admin_data['last'] = '';
             if (count($fn) > 1) {
-                $user_data['last'] = ucwords($fn[1]);
+                $admin_data['last'] = ucwords($fn[1]);
             }
 
         } else {
-            unset($_SESSION['LVNUser']);
-            redirect(PROOT . 'app/');
+            unset($_SESSION['CTFLHADMIN']);
+            redirect(PROOT . 'admin/');
         }
 
     }
