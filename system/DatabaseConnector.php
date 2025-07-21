@@ -45,7 +45,6 @@
             unset($_SESSION['CTFLHADMIN']);
             redirect(PROOT . 'admin/');
         }
-
     }
 
     require_once ("Functions.php");

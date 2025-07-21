@@ -1,6 +1,6 @@
 <?php
-    session_start();
-
+    include_once ("../system/DatabaseConnector.php");
+    
     // Unset all session variables
     $_SESSION = array();
 

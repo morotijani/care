@@ -1,43 +1,47 @@
-<?php include 'includes/header.php'; ?>
-<?php include 'includes/sidebar.php'; ?>
-
-<?php
-// Process status update
-if (isset($_POST['update_status']) && isset($_POST['request_id'])) {
-    $requestId = $_POST['request_id'];
-    $newStatus = $_POST['status'];
-    
-    $updateQuery = "UPDATE requests SET status = ? WHERE id = ?";
-    $stmt = $conn->prepare($updateQuery);
-    $stmt->bind_param("si", $newStatus, $requestId);
-    
-    if ($stmt->execute()) {
-        echo "<div class='alert alert-success'>Status updated successfully!</div>";
-    } else {
-        echo "<div class='alert alert-danger'>Error updating status: " . $conn->error . "</div>";
+<?php 
+    include_once ("../system/DatabaseConnector.php");
+    if (!admin_is_logged_in()) {
+        admin_login_redirect();
     }
-    
-    $stmt->close();
-}
+    include 'includes/header.php';
+    include 'includes/sidebar.php';
 
-// Pagination setup
-$limit = 10; // Records per page
-$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$offset = ($page - 1) * $limit;
+    // Process status update
+    if (isset($_POST['update_status']) && isset($_POST['request_id'])) {
+        $requestId = $_POST['request_id'];
+        $newStatus = $_POST['status'];
+        
+        $updateQuery = "UPDATE requests SET status = ? WHERE id = ?";
+        $stmt = $dbConnection->prepare($updateQuery);
+        $stmt->bind_param("si", $newStatus, $requestId);
+        
+        if ($stmt->execute()) {
+            echo "<div class='alert alert-success'>Status updated successfully!</div>";
+        } else {
+            echo "<div class='alert alert-danger'>Error updating status: " . $dbConnection->error . "</div>";
+        }
+        
+        $stmt->close();
+    }
 
-// Filter by status if provided
-$statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
-$whereClause = $statusFilter ? "WHERE status = '$statusFilter'" : "";
+    // Pagination setup
+    $limit = 10; // Records per page
+    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $offset = ($page - 1) * $limit;
 
-// Get total records
-$totalQuery = "SELECT COUNT(*) as total FROM requests $whereClause";
-$totalResult = $conn->query($totalQuery);
-$totalRecords = $totalResult->fetch_assoc()['total'];
-$totalPages = ceil($totalRecords / $limit);
+    // Filter by status if provided
+    $statusFilter = isset($_GET['status']) ? $_GET['status'] : '';
+    $whereClause = $statusFilter ? "WHERE status = '$statusFilter'" : "";
 
-// Get requests with pagination and filtering
-$query = "SELECT * FROM requests $whereClause ORDER BY id DESC LIMIT $offset, $limit";
-$result = $conn->query($query);
+    // Get total records
+    $totalQuery = "SELECT COUNT(*) as total FROM requests $whereClause";
+    $totalResult = $dbConnection->query($totalQuery);
+    $totalRecords = $totalResult->fetch_assoc()['total'];
+    $totalPages = ceil($totalRecords / $limit);
+
+    // Get requests with pagination and filtering
+    $query = "SELECT * FROM requests $whereClause ORDER BY id DESC LIMIT $offset, $limit";
+    $result = $dbConnection->query($query);
 ?>
 
 <div class="card">

@@ -1,12 +1,10 @@
 <?php
 
 // Include database connection
-include_once "../system/DatabaseConnector.php";
+include_once ("../system/DatabaseConnector.php");
 
-// Check if already logged in
-if (isset($_SESSION['admin_id'])) {
-    header("Location: dashboard.php");
-    exit();
+if (admin_is_logged_in()) {
+    redirect(PROOT . 'admin/dashboard');
 }
 
 $error = "";
