@@ -1,51 +1,43 @@
 <?php
 
-// Include database connection
-include_once ("../system/DatabaseConnector.php");
-
-if (admin_is_logged_in()) {
-    redirect(PROOT . 'admin/dashboard');
-}
-
-$error = "";
-
-// Process login form
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
-    
-    // Validate input
-    if (empty($username) || empty($password)) {
-        $error = "Username and password are required";
-    } else {
-        // Query to check user credentials
-        $sql = "SELECT id, name, username, password FROM admin WHERE username = ?";
-        $stmt = $dbConnection->prepare($sql);
-        $stmt->bind_param("s", $username);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        if ($result->num_rows == 1) {
-            $row = $result->fetch_assoc();
-            // Verify password (assuming password is hashed in the database)
-            if (password_verify($password, $row['password'])) {
-                // Set session variables
-                $_SESSION['admin_id'] = $row['id'];
-                $_SESSION['admin_name'] = $row['name'];
-                
-                // Redirect to dashboard
-                header("Location: dashboard.php");
-                exit();
-            } else {
-                $error = "Invalid username or password";
-            }
-        } else {
-            $error = "Invalid username or password";
-        }
-        
-        $stmt->close();
+    // Include database connection
+    include_once ("../system/DatabaseConnector.php");
+    if (admin_is_logged_in()) {
+        redirect(PROOT . 'admin/dashboard');
     }
-}
+
+    $error = "";
+
+    // Process login form
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+        
+        // Validate input
+        if (empty($email) || empty($password)) {
+            $error = "Username and password are required";
+        } else {
+            try {
+                // Check if the user exists
+                $statement = $dbConnection->prepare("SELECT user_id, user_password FROM care_users WHERE user_email = ?");
+                $statement->execute([$email]);
+                $user = $statement->fetch(PDO::FETCH_ASSOC);
+
+                if ($user && password_verify($password, $user['user_password'])) {
+                    // Login successful
+                    if (empty($error) || $error == "") {
+                        $admin_id = $user['user_id'];
+                        adminLogin($admin_id);
+                    }
+                } else {
+                    $error = "Invalid email or password.";
+                }
+
+            } catch (PDOException $e) {
+			    $error = "Login failed: " . $e->getMessage();
+            }
+        }
+    }
 
 ?>
 
@@ -91,8 +83,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
             <div class="mb-3">
-                <label for="username" class="form-label">Username</label>
-                <input type="text" class="form-control" id="username" name="username" required>
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
