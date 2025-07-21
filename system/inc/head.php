@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, viewport-fit=cover">
     
     <!-- SEO meta tags -->
-    <title><?= $title; ?></title>
+    <title><?= $title; ?> - Care That Feels Like Home</title>
     <meta name="description" content="Care That Feels Like Home Corporation - dedicated to delivering compassionate, high-quality home health care to individuals and families in Bismarck, North Dakota">
     <meta name="keywords" content="Homecare, nursing, elderly, children, sick">
     <meta name="author" content="Care That Feels Like Home Corporation.">

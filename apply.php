@@ -4,7 +4,6 @@
     include_once "system/inc/head.php";
     include_once "system/inc/nav.php";
     
-
     // Process application form submission
     if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["apply_submit"])) {
         $name = sanitize($_POST["name"]);
