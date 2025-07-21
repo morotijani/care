@@ -115,14 +115,17 @@
                                                 <div class="modal-body">
                                                     <div class="row">
                                                         <div class="col-md-6">
-                                                            <p><strong>Name:</strong> <?php echo htmlspecialchars($row['name']); ?></p>
-                                                            <p><strong>Email:</strong> <?php echo htmlspecialchars($row['email']); ?></p>
-                                                            <p><strong>Phone:</strong> <?php echo htmlspecialchars($row['phone']); ?></p>
-                                                            <p><strong>Address:</strong> <?php echo htmlspecialchars($row['address']); ?></p>
+                                                            <p><strong>Name:</strong> <?php echo htmlspecialchars($row['request_name']); ?></p>
+                                                            <p><strong>Email:</strong> <?php echo htmlspecialchars($row['request_email']); ?></p>
+                                                            <p><strong>Phone:</strong> <?php echo htmlspecialchars($row['request_phone']); ?></p>
+                                                            <p><strong>Care for:</strong> <?php echo htmlspecialchars($row['request_care_for']); ?></p>
                                                         </div>
                                                         <div class="col-md-6">
-                                                            <p><strong>Request Type:</strong> <?php echo htmlspecialchars($row['request_type']); ?></p>
-                                                            <p><strong>Status:</strong> <?php echo ucfirst($row['status']); ?></p>
+                                                            <p><strong>Request Type:</strong> <?php echo htmlspecialchars($row['request_service_type']); ?></p>
+                                                            <p><strong>Request Start Date:</strong> <?php echo $row['request_start_date']; ?></p>
+                                                            <p><strong>Frequency:</strong> <?php echo $row['request_frequency']; ?></p>
+                                                            <p><strong>Hours:</strong> <?php echo $row['request_hours']; ?></p>
+                                                            <p><strong>Status:</strong> <?php echo ucfirst($row['request_status']); ?></p>
                                                             <p><strong>Date Requested:</strong> <?php echo date('M d, Y', strtotime($row['created_at'])); ?></p>
                                                             <?php if (!empty($row['assigned_to'])): ?>
                                                                 <p><strong>Assigned To:</strong> <?php echo htmlspecialchars($row['assigned_to']); ?></p>
@@ -130,8 +133,8 @@
                                                         </div>
                                                     </div>
                                                     <hr>
-                                                    <h6>Request Details</h6>
-                                                    <p><?php echo nl2br(htmlspecialchars($row['details'])); ?></p>
+                                                    <h6>Request Special Requirement</h6>
+                                                    <p><?php echo nl2br(htmlspecialchars($row['request_special_requirements'])); ?></p>
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -154,14 +157,14 @@
                                                         <div class="mb-3">
                                                             <label for="status" class="form-label">Status</label>
                                                             <select name="status" class="form-select" required>
-                                                                <option value="pending" <?php echo $row['status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
-                                                                <option value="approved" <?php echo $row['status'] == 'approved' ? 'selected' : ''; ?>>Approved</option>
-                                                                <option value="assigned" <?php echo $row['status'] == 'assigned' ? 'selected' : ''; ?>>Assigned</option>
-                                                                <option value="completed" <?php echo $row['status'] == 'completed' ? 'selected' : ''; ?>>Completed</option>
-                                                                <option value="cancelled" <?php echo $row['status'] == 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
+                                                                <option value="pending" <?php echo $row['request_status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
+                                                                <option value="approved" <?php echo $row['request_status'] == 'approved' ? 'selected' : ''; ?>>Approved</option>
+                                                                <option value="assigned" <?php echo $row['request_status'] == 'assigned' ? 'selected' : ''; ?>>Assigned</option>
+                                                                <option value="completed" <?php echo $row['request_status'] == 'completed' ? 'selected' : ''; ?>>Completed</option>
+                                                                <option value="cancelled" <?php echo $row['request_status'] == 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
                                                             </select>
                                                         </div>
-                                                        <div class="mb-3" id="assignedToField<?php echo $row['id']; ?>" style="display: <?php echo $row['status'] == 'assigned' ? 'block' : 'none'; ?>">
+                                                        <div class="mb-3" id="assignedToField<?php echo $row['id']; ?>" style="display: <?php echo $row['request_status'] == 'assigned' ? 'block' : 'none'; ?>">
                                                             <label for="assigned_to" class="form-label">Assigned To</label>
                                                             <input type="text" name="assigned_to" class="form-control" value="<?php echo htmlspecialchars($row['assigned_to']); ?>">
                                                         </div>
