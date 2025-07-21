@@ -25,19 +25,20 @@
     $appStatusResult =$dbConnection->query($appStatusQuery);
     $appStatus = [];
     if ($appStatusResult) {
-        while ($row = $appStatusResult->fetchAll()) {
+        foreach ($appStatusResult->fetchAll() as $row) {
             $appStatus[$row['application_status']] = $row['count'];
         }
     }
 
 // Get status counts for requests
 $reqStatusQuery = "SELECT request_status, COUNT(*) as count FROM care_service_requests GROUP BY request_status";
-$reqStatusResult =$dbConnection->query($reqStatusQuery);
+$reqStatusResult = $dbConnection->query($reqStatusQuery);
 $reqStatus = [];
 if ($reqStatusResult) {
-    while ($row = $reqStatusResult->fetchAll()) {
+    foreach ($reqStatusResult->fetchAll() as $row) {
         $reqStatus[$row['request_status']] = $row['count'];
     }
+    // dnd($row);
 }
 ?>
 
