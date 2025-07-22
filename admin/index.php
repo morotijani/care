@@ -1,5 +1,5 @@
 <?php
-
+    // echo password_hash('Alfa@ctflh', PASSWORD_BCRYPT);die;
     // Include database connection
     include_once ("../system/DatabaseConnector.php");
     if (admin_is_logged_in()) {
