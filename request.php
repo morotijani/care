@@ -98,10 +98,22 @@
                                     <div class="col-sm-6">
                                         <label for="service_type" class="form-label">Service type <span class="text-danger">*</span></label>
                                         <select id="service_type" name="service_type" class="form-select form-select-lg" required>
-                                            <option value="">Select service type</option>
-                                            <option value="Elderly Care">Elderly Care</option>
-                                            <option value="Sick Care">Sick Care</option>
-                                            <option value="Child Care">Child Care</option>
+                                            <option value="Non-Medical Transportation (Local-OOT Driver)">Non-Medical Transportation (Local-OOT Driver)</option>
+                                            <option value="Chore - Lawn Care">Chore - Lawn Care</option>
+                                            <option value="Home Service">Home Service</option>
+                                            <option value="Non-Medical Transportation (Escort)">Non-Medical Transportation (Escort)</option>
+                                            <option value="Companionship Services">Companionship Services</option>
+                                            <option value="Transition Coordination">Transition Coordination</option>
+                                            <option value="Extended Personal Care - Nurse">Extended Personal Care - Nurse</option>
+                                            <option value="Nurse Education">Nurse Education</option>
+                                            <option value="Extended Personal Care - Non-Nurse">Extended Personal Care - Non-Nurse</option>
+                                            <option value="Personal Care Service/Waiver - Unit Rate">Personal Care Service/Waiver - Unit Rate</option>
+                                            <option value="Respite Care">Respite Care</option>
+                                            <option value="Supervision">Supervision</option>
+                                            <option value="Personal Care Service - Unit Rate">Personal Care Service - Unit Rate</option>
+                                            <option value="Chore - Snow Removal">Chore - Snow Removal</option>
+                                            <option value="One Time Transition Costs">One Time Transition Costs</option>
+                                            <option value="Chore - Labor">Chore - Labor</option>
                                             <option value="Multiple Services">Multiple Services</option>
                                         </select>
                                     </div>
