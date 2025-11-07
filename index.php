@@ -67,12 +67,12 @@
                         <div class="d-table bg-secondary rounded-3 p-3 mx-auto mt-n3 mb-4">
                             <i class="ai-user-check d-block h3 text-primary mb-0"></i>
                         </div>
-                        <h3 class="h5 mb-2">Elderly Care</h3>
-                        <p class="fs-sm mb-0">Compassionate assistance for seniors, including personal care, medication reminders, companionship, and mobility support.</p>
+                        <h3 class="h5 mb-2">Non-Medical Transportation</h3>
+                        <p class="fs-sm mb-0">Safe and reliable transport for local and out-of-town appointments.</p>
                     </div>
-                    <div class="card-footer pt-0 border-0">
+                    <!-- <div class="card-footer pt-0 border-0">
                         <a href="services.php#elderly" class="btn btn-outline-primary stretched-link">Learn more</a>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <!-- Sick Care -->
@@ -82,12 +82,12 @@
                         <div class="d-table bg-secondary rounded-3 p-3 mx-auto mt-n3 mb-4">
                             <i class="ai-activity d-block h3 text-primary mb-0"></i>
                         </div>
-                        <h3 class="h5 mb-2">Sick Care</h3>
-                        <p class="fs-sm mb-0">Professional care for individuals recovering from illness or surgery, including medication management and health monitoring.</p>
+                        <h3 class="h5 mb-2">Home Services</h3>
+                        <p class="fs-sm mb-0">Comprehensive support for daily living, meal preparation, and home upkeep.</p>
                     </div>
-                    <div class="card-footer pt-0 border-0">
+                    <!-- <div class="card-footer pt-0 border-0">
                         <a href="services.php#sick" class="btn btn-outline-primary stretched-link">Learn more</a>
-                    </div>
+                    </div> -->
                 </div>
             </div>
             <!-- Child Care -->
@@ -95,16 +95,20 @@
                 <div class="card h-100 border-0 shadow-sm">
                     <div class="card-body text-center">
                         <div class="d-table bg-secondary rounded-3 p-3 mx-auto mt-n3 mb-4">
-                            <i class="ai-users d-block h3 text-primary mb-0"></i>
+                            <i class="ai-calendar d-block h3 text-primary mb-0"></i>
                         </div>
-                        <h3 class="h5 mb-2">Child Care</h3>
-                        <p class="fs-sm mb-0">Reliable and nurturing care for children of all ages, including educational activities, meal preparation, and supervision.</p>
+                        <h3 class="h5 mb-2">Companionship</h3>
+                        <p class="fs-sm mb-0">Meaningful companionship that nurtures emotional well-being.</p>
                     </div>
-                    <div class="card-footer pt-0 border-0">
+                    <!-- <div class="card-footer pt-0 border-0">
                         <a href="services.php#children" class="btn btn-outline-primary stretched-link">Learn more</a>
-                    </div>
+                    </div> -->
                 </div>
             </div>
+        </div>
+        <div class="text-center mt-4">
+            <p class="fs-lg text-muted mb-0">Explore our full range of services to find the right support for you or your loved ones.</p>
+            <a href="<?= PROOT; ?>services" class="btn btn-primary mt-4">View All Services</a>
         </div>
     </section>
 

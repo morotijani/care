@@ -22,124 +22,174 @@
     </section>
 
     <!-- Elderly Care -->
-    <section id="elderly" class="container py-5 my-md-2 my-lg-4">
-        <div class="row align-items-center">
-            <div class="col-md-6 pb-2 pb-md-0 mb-4 mb-md-0">
-                <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/cover-1.jpg); background-size: cover;"></div>
-            </div>
-            <div class="col-md-6">
-                <div class="ps-md-4 ps-lg-0">
-                    <h2 class="h1 mb-md-4">Elderly Care</h2>
-                    <p class="fs-lg">Our elderly care services are designed to help seniors maintain their independence while receiving the support they need. We understand that each senior has unique needs, which is why we create personalized care plans.</p>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Personal care assistance (bathing, grooming, dressing)</span>
-                    </div>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Medication reminders and management</span>
-                    </div>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Mobility assistance and fall prevention</span>
-                    </div>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Companionship and emotional support</span>
-                    </div>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Light housekeeping and meal preparation</span>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Transportation to appointments and errands</span>
+    <section class="container py-5 mt-5 mb-5">
+        <div class="row g-4">
+            
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Non-Medical Transportation (Local-OOT Driver)</h5>
+                        <p class="card-text">We provide safe and reliable non-medical transportation for local and out-of-town appointments. Our trained drivers ensure clients reach their destinations comfortably and on time.</p>
                     </div>
                 </div>
             </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Chore - Lawn Care</h5>
+                        <p class="card-text">Our lawn care team maintains a clean and safe outdoor environment by mowing lawns, trimming hedges, and ensuring your surroundings stay beautiful and well-kept.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Home Service</h5>
+                        <p class="card-text">We offer home services including housekeeping, meal preparation, laundry, and other daily tasks to maintain a clean and comfortable living environment.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Non-Medical Transportation (Escort)</h5>
+                        <p class="card-text">For clients needing assistance during travel, our trained escorts accompany and support them throughout their journey—ensuring comfort, safety, and peace of mind.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Companionship Services</h5>
+                        <p class="card-text">Our caregivers provide meaningful companionship and emotional support through conversation, shared activities, and assistance with daily routines to combat loneliness.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Transition Coordination</h5>
+                        <p class="card-text">We assist clients transitioning between care settings by coordinating appointments, transportation, and home readiness for a smooth experience.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Extended Personal Care - Nurse</h5>
+                        <p class="card-text">Skilled nurses provide comprehensive personal care for clients with advanced health needs, including medication management, wound care, and routine monitoring.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Nurse Education</h5>
+                        <p class="card-text">We offer nurse-led education programs to help clients and families understand health conditions, medications, and daily care requirements.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Extended Personal Care - Non-Nurse</h5>
+                        <p class="card-text">Our trained caregivers assist with personal hygiene, grooming, feeding, and mobility support to maintain comfort and dignity.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Personal Care Service/Waiver - Unit Rate</h5>
+                        <p class="card-text">Tailored personal care services designed under waiver programs, ensuring accessible, affordable, and quality in-home support.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Respite Care</h5>
+                        <p class="card-text">We provide temporary relief for family caregivers by taking over their duties for a period, ensuring clients receive continuous care.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Supervision</h5>
+                        <p class="card-text">Our supervision services ensure clients remain safe and supported at home or in the community, providing oversight and assistance with daily activities.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Personal Care Service - Unit Rate</h5>
+                        <p class="card-text">Customized assistance for hygiene, dressing, meal prep, and other essential activities—charged per service unit for flexibility.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Chore - Snow Removal</h5>
+                        <p class="card-text">Keep pathways safe during winter. Our snow removal team clears driveways, sidewalks, and entrances to ensure accessibility and prevent accidents.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">One Time Transition Costs</h5>
+                        <p class="card-text">We assist with one-time transition costs related to moving or setting up a new care environment, helping clients settle safely and comfortably.</p>
+                    </div>
+                </div>
+            </div>
+        
+
+            <div class="col-md-6 col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="card-title fw-bold">Chore - Labor</h5>
+                        <p class="card-text">We provide reliable general labor services, including home maintenance, moving support, and light repairs to maintain a safe living space.</p>
+                    </div>
+                </div>
+            </div>
+        
         </div>
     </section>
 
-    <!-- Sick Care -->
-    <section id="sick" class="container py-5 my-md-2 my-lg-4 border-top">
-        <div class="row align-items-center flex-md-row-reverse">
-            <div class="col-md-6 pb-2 pb-md-0 mb-4 mb-md-0">
-                <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/cover-6.jpg); background-size: cover;"></div>
-            </div>
-            <div class="col-md-6">
-                <div class="pe-md-4 pe-lg-0">
-                    <h2 class="h1 mb-md-4">Sick Care</h2>
-                    <p class="fs-lg">Our sick care services provide professional support for individuals recovering from illness, surgery, or managing chronic conditions. We work closely with healthcare providers to ensure continuity of care.</p>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Medication administration and management</span>
-                    </div>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Wound care and dressing changes</span>
-                    </div>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Vital signs monitoring</span>
-                    </div>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Post-surgery recovery assistance</span>
-                    </div>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Chronic disease management</span>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Coordination with healthcare providers</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Child Care -->
-    <section id="children" class="container py-5 my-md-2 my-lg-4 border-top">
-        <div class="row align-items-center">
-            <div class="col-md-6 pb-2 pb-md-0 mb-4 mb-md-0">
-                <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/cover-7.jpg); background-size: cover;"></div>
-            </div>
-            <div class="col-md-6">
-                <div class="ps-md-4 ps-lg-0">
-                    <h2 class="h1 mb-md-4">Child Care</h2>
-                    <p class="fs-lg">Our child care services provide nurturing and stimulating care for children of all ages. We create a safe and supportive environment that promotes learning and development.</p>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Age-appropriate activities and play</span>
-                    </div>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Homework help and educational support</span>
-                    </div>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Meal preparation and feeding assistance</span>
-                    </div>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Bathing and personal care</span>
-                    </div>
-                    <div class="d-flex align-items-center pb-2 mb-1">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Transportation to and from school or activities</span>
-                    </div>
-                    <div class="d-flex align-items-center">
-                        <i class="ai-check-circle text-primary me-2"></i>
-                        <span>Special needs care and support</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
 
     <!-- Additional Services -->
-    <section class="container py-5 my-md-2 my-lg-4 border-top">
+    <!-- <section class="container py-5 my-md-2 my-lg-4 border-top">
         <div class="row justify-content-center text-center pb-4 mb-2 mb-lg-3">
             <div class="col-lg-8 col-xl-7 col-xxl-6">
                 <h2 class="h1 mb-lg-4">Additional Services</h2>
@@ -181,7 +231,7 @@
                 </div>
             </div>
         </div>
-    </section>
+    </section> -->
 
     <!-- CTA section -->
     <section class="container py-5 my-md-2 my-lg-4">
