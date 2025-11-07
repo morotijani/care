@@ -166,7 +166,7 @@
                     <!-- Item -->
                     <div class="col">
                         <div class="card card-hover border-0 rounded-5 overflow-hidden">
-                            <img src="<?= PROOT; ?>assets/media/team/team-2.JPG" alt="Image">
+                            <img src="<?= PROOT; ?>assets/media/team/team-2.JPG" alt="Image" class="img-fluid" style="width: auto; height: 400px; object-fit: cover; object-position: top;">
                             <div class="position-absolute top-0 start-0 w-100 h-100 opacity-0">
                                 <div class="bg-dark position-absolute top-0 start-0 w-100 h-100 opacity-50"></div>
                                 <div class="card-body d-flex flex-column justify-content-end h-100 position-relative z-2 text-center" data-bs-theme="dark">
@@ -179,7 +179,30 @@
                                         <a class="btn btn-icon btn-sm btn-light btn-facebook rounded-circle mx-2" href="https://www.facebook.com/share/1CChPBoFZo/?mibextid=wwXIfr" aria-label="Facebook">
                                             <i class="ai-facebook"></i>
                                         </a>
-                                        <a class="btn btn-icon btn-sm btn-light btn-linkedin rounded-circle mx-2" href="#" aria-label="LinkedIn">
+                                        <a class="btn btn-icon btn-sm btn-light btn-linkedin rounded-circle mx-2" href="javascript:;" aria-label="LinkedIn">
+                                            <i class="ai-linkedin"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card card-hover border-0 rounded-5 overflow-hidden">
+                            <img src="<?= PROOT; ?>assets/media/team/Kristen.jpg" alt="Image" class="img-fluid" style="width: auto; height: 400px; object-fit: cover; object-position: top;">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 opacity-0">
+                                <div class="bg-dark position-absolute top-0 start-0 w-100 h-100 opacity-50"></div>
+                                <div class="card-body d-flex flex-column justify-content-end h-100 position-relative z-2 text-center" data-bs-theme="dark">
+                                    <h3 class="h5 mb-1">Kristen Johnson</h3>
+                                    <p class="text-body mb-3">Registered Nurse</p>
+                                    <div class="d-flex justify-content-center">
+                                        <a class="btn btn-icon btn-sm btn-light btn-instagram rounded-circle mx-2" href="javascript:;" aria-label="Instagram">
+                                            <i class="ai-instagram"></i>
+                                        </a>
+                                        <a class="btn btn-icon btn-sm btn-light btn-facebook rounded-circle mx-2" href="javascript:;" aria-label="Facebook">
+                                            <i class="ai-facebook"></i>
+                                        </a>
+                                        <a class="btn btn-icon btn-sm btn-light btn-linkedin rounded-circle mx-2" href="javascript:;" aria-label="LinkedIn">
                                             <i class="ai-linkedin"></i>
                                         </a>
                                     </div>
