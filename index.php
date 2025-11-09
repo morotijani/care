@@ -10,27 +10,27 @@
     <section class="position-relative min-vh-100 py-5" data-bs-theme="light">
 
         <!-- Background image slider -->
-        <div class="swiper swiper-scale-effect position-absolute top-0 start-0 w-100 h-100" data-swiper-options='{
-          "effect": "fade",
-          "speed": 800,
-          "autoplay": {
-            "delay": 7000,
-            "disableOnInteraction": false
-          },
-          "pagination": {
-            "el": ".swiper-pagination",
-            "clickable": true
-          }
-        }'>
+            <div class="swiper swiper-scale-effect position-absolute top-0 start-0 w-100 h-100" data-swiper-options='{
+                "effect": "fade",
+                "speed": 800,
+                "autoplay": {
+                    "delay": 7000,
+                    "disableOnInteraction": false
+                },
+                "pagination": {
+                    "el": ".swiper-pagination",
+                    "clickable": true
+                }
+            }'>
             <div class="swiper-wrapper">
                 <div class="swiper-slide">
-                    <div class="swiper-slide-cover" style="background-image: url(<?= PROOT; ?>assets/media/cover-3.jpg);"></div>
+                    <div class="swiper-slide-cover" style="background-image: url(<?= PROOT; ?>assets/media/nurse-education.jpg);"></div>
                 </div>
                 <div class="swiper-slide">
-                    <div class="swiper-slide-cover" style="background-image: url(<?= PROOT; ?>assets/media/cover-2.jpg);"></div>
+                    <div class="swiper-slide-cover" style="background-image: url(<?= PROOT; ?>assets/media/companionship.jpg);"></div>
                 </div>
                 <div class="swiper-slide">
-                    <div class="swiper-slide-cover" style="background-image: url(<?= PROOT; ?>assets/media/cover-1.jpg);"></div>
+                    <div class="swiper-slide-cover" style="background-image: url(<?= PROOT; ?>assets/media/home-service.jpg);"></div>
                 </div>
             </div>
             <div class="swiper-pagination mb-4"></div>
@@ -40,8 +40,8 @@
         <div class="container position-relative z-2 py-lg-3 py-xl-5 my-5">
             <div class="row pt-md-3 py-xxl-5 my-5">
                 <div class="col py-5 mb-md-4 mb-lg-5">
-                    <h1 class="display-1 text-uppercase text-primary mb-4">Care That Feels Like Home</h1>
-                    <p class="d-block fs-xl pb-2 mb-4 mb-md-5" style="max-width: 500px;">Providing compassionate care for the elderly, the sick, and children in the comfort of your home.</p>
+                    <h1 class="display-1 fw-bold text-shadow-sm text-uppercase text-primary mb-4" style="text-shadow: 5px 0 0 #ccc;">Care That Feels Like Home</h1>
+                    <p class="d-block fs-xl pb-2 mb-4 mb-md-5 text-white" style="max-width: 500px;">Providing compassionate care for the elderly, the sick, and children in the comfort of your home.</p>
                     <div class="position-relative d-inline-flex align-items-center">
                         <a href="<?= PROOT; ?>request" class="btn btn-primary btn-lg me-sm-3 mb-3">Request Service</a>
                         <a href="<?= PROOT; ?>apply" class="btn btn-outline-light btn-lg mb-3">Apply as Caregiver</a>
@@ -272,56 +272,67 @@
     </section>
 
 
-    <!-- Testimonials -->
-    <section class="bg-secondary py-5 my-md-2 my-lg-4 my-xl-5">
-        <div class="container py-md-4 py-lg-5">
-            <div class="row justify-content-center text-center pt-2 pb-4 mb-3">
-                <div class="col-lg-8 col-xl-7 col-xxl-6">
-                    <h2 class="h1 mb-lg-4">What Our Clients Say</h2>
-                </div>
+    
+    <!-- Testimonials carousel -->
+    <section class="bg-secondary">
+        <div class="container py-5 mb-1 mb-sm-2 my-lg-3 my-xl-4 my-xxl-5">
+        <div class="row justify-content-center pt-2 pt-sm-4 pb-4 mb-2 mb-lg-3">
+            <div class="col-lg-8 col-xl-7 col-xxl-6 text-center pt-2">
+                <h2 class="h1 mb-1">Testimonials from our clients</h2>
             </div>
-            <div class="row row-cols-1 row-cols-md-2 g-4">
-                <div class="col">
-                    <div class="card border-0 h-100">
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <i class="ai-star-filled fs-lg text-warning me-1"></i>
-                                <i class="ai-star-filled fs-lg text-warning me-1"></i>
-                                <i class="ai-star-filled fs-lg text-warning me-1"></i>
-                                <i class="ai-star-filled fs-lg text-warning me-1"></i>
-                                <i class="ai-star-filled fs-lg text-warning"></i>
-                            </div>
-                            <p class="card-text fs-base mb-3">"The caregiver assigned to my mother was exceptional. She was professional, compassionate, and truly cared about my mother's well-being. I highly recommend this service to anyone looking for quality home care."</p>
-                            <div class="d-flex align-items-center">
-                                <div class="ps-3">
-                                    <h6 class="mb-0">Sarah Johnson</h6>
-                                    <span class="fs-sm text-muted">Elderly Care Client</span>
-                                </div>
-                            </div>
+        </div>
+        <div class="swiper pb-2 pb-sm-4" data-swiper-options='{
+            "slidesPerView": 1,
+            "spaceBetween": 24,
+            "loop": true,
+            "pagination": {
+                "el": ".swiper-pagination",
+                "clickable": true
+            },
+            "breakpoints": {
+                "800": {
+                    "slidesPerView": 2
+                }
+            }
+        }'>
+            <div class="swiper-wrapper pt-5">
+
+                <!-- Item -->
+                <div class="swiper-slide h-auto">
+                    <div class="card border-0 bg-info bg-opacity-10 h-100 text-center">
+                        <div class="polygon-avatar bg-info mx-auto translate-middle-y">
+                            <img src="<?= PROOT; ?>assets/media/default-profile.png" alt="Sarah Johnson">
+                        </div>
+                        <div class="card-body pt-0 mt-n4">
+                            <p class="card-text fs-xl">"The caregiver assigned to my mother was exceptional. She was professional, compassionate, and truly cared about my mother's well-being. I highly recommend this service to anyone looking for quality home care."</p>
+                        </div>
+                        <div class="card-footer border-0 pt-0">
+                            <div class="h4 mb-1">Sarah Johnson</div>
+                            <span>Elderly Care Client</span>
                         </div>
                     </div>
                 </div>
-                <div class="col">
-                    <div class="card border-0 h-100">
-                        <div class="card-body">
-                            <div class="mb-3">
-                                <i class="ai-star-filled fs-lg text-warning me-1"></i>
-                                <i class="ai-star-filled fs-lg text-warning me-1"></i>
-                                <i class="ai-star-filled fs-lg text-warning me-1"></i>
-                                <i class="ai-star-filled fs-lg text-warning me-1"></i>
-                                <i class="ai-star-filled fs-lg text-warning"></i>
-                            </div>
-                            <p class="card-text fs-base mb-3">"Finding reliable childcare was a challenge until we discovered this service. Our caregiver is amazing with our children, and we feel completely at ease knowing they are in good hands."</p>
-                            <div class="d-flex align-items-center">
-                                <div class="ps-3">
-                                    <h6 class="mb-0">Michael & Lisa Thompson</h6>
-                                    <span class="fs-sm text-muted">Child Care Clients</span>
-                                </div>
-                            </div>
+
+                <!-- Item -->
+                <div class="swiper-slide h-auto">
+                    <div class="card border-0 bg-warning bg-opacity-10 h-100 text-center">
+                        <div class="polygon-avatar bg-warning mx-auto translate-middle-y">
+                            <img src="<?= PROOT; ?>assets/media/default-profile.png" alt="Michael & Lisa Thompson">
+                        </div>
+                        <div class="card-body pt-0 mt-n4">
+                            <p class="card-text fs-xl">"Finding reliable childcare was a challenge until we discovered this service. Our caregiver is amazing with our children, and we feel completely at ease knowing they are in good hands."</p>
+                        </div>
+                        <div class="card-footer border-0 pt-0">
+                            <div class="h4 mb-1">Michael & Lisa Thompson</div>
+                            <span>Child Care Clients</span>
                         </div>
                     </div>
                 </div>
             </div>
+
+            <!-- Pagination (bullets) -->
+            <div class="swiper-pagination position-relative bottom-0 mt-2 mt-lg-3 pt-4"></div>
+        </div>
         </div>
     </section>
 
@@ -329,7 +340,7 @@
     <section class="container py-5 my-md-2 my-lg-4 my-xl-5">
         <div class="row align-items-center">
             <div class="col-md-6 pb-2 pb-md-0 mb-4 mb-md-0">
-                <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/cover-2.jpg); background-size: cover;">
+                <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/started.jpg); background-size: cover;">
                 </div>
             </div>
             <div class="col-md-6 col-xl-5 offset-xl-1">

@@ -28,7 +28,9 @@
     <link rel="stylesheet" media="screen" href="<?= PROOT; ?>assets/css/swiper-bundle.min.css">
 
     <!-- Font icons -->
+    <link rel="stylesheet" href="<?= PROOT; ?>assets/css/swiper-bundle.min.css">
     <link rel="stylesheet" href="<?= PROOT; ?>assets/icons/around-icons.min.css">
+    <link rel="stylesheet" href="<?= PROOT; ?>assets/icons/aos.css">
 
     <!-- Theme styles + Bootstrap -->
     <link rel="stylesheet" media="screen" href="<?= PROOT; ?>assets/css/theme.min.css">

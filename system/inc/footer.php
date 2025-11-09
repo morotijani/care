@@ -58,6 +58,7 @@
 
     <script src="<?= PROOT; ?>assets/js/jquery-3.7.1.min.js"></script>
     <script src="<?= PROOT; ?>assets/js/swiper-bundle.min.js"></script>
+    <script src="<?= PROOT; ?>assets/js/aos.js"></script>
     <!-- Bootstrap + Theme scripts -->
     <script src="<?= PROOT; ?>assets/js/theme.min.js"></script>
 
