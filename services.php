@@ -2,7 +2,7 @@
     $title = "Our Services - ";
     require_once "system/DatabaseConnector.php";
     include "system/inc/head.php";
-        include "system/inc/nav.php";
+    include "system/inc/nav.php";
 
 ?>
     <!-- Breadcrumb + Services grid -->
@@ -11,181 +11,209 @@
         <!-- Breadcrumb -->
         <nav aria-label="breadcrumb">
             <ol class="pt-lg-3 pb-lg-4 pb-2 breadcrumb">
-                <li class="breadcrumb-item"><a href="<?= PROOT; ?>">Home</a></li>
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
                 <li class="breadcrumb-item active" aria-current="page">Services</li>
             </ol>
         </nav>
 
         <!-- Page title -->
-        <h1 class="text-center">Our Home Care Services</h1>
-        <p class="text-center fs-lg pb-4 mb-2 mb-lg-3">We offer a comprehensive range of home care services designed to meet the unique needs of the elderly, the sick, and children. Our professional caregivers are trained to provide compassionate and reliable care.</p>
-    </section>
+        <h1 class="text-center">Our services</h1>
+        <p class="text-center pb-4 mb-2 mb-lg-3">We offer a comprehensive range of home care services designed to meet the unique needs of the elderly, the sick, and children. Our professional caregivers are trained to provide compassionate and reliable care.</p>
 
-    <!-- Elderly Care -->
-    <section class="container py-5 mt-5 mb-5">
-        <div class="row g-4">
-            
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Non-Medical Transportation (Local-OOT Driver)</h5>
+        <!-- Services grid -->
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4 pb-sm-3 pb-md-4 pb-xl-5">
+
+            <!-- Item -->
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Non-Medical Transportation (Local-OOT Driver)</h3>
                         <p class="card-text">We provide safe and reliable non-medical transportation for local and out-of-town appointments. Our trained drivers ensure clients reach their destinations comfortably and on time.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Chore - Lawn Care</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">NChore - Lawn Care</h3>
                         <p class="card-text">Our lawn care team maintains a clean and safe outdoor environment by mowing lawns, trimming hedges, and ensuring your surroundings stay beautiful and well-kept.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Home Service</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Home Service</h3>
                         <p class="card-text">We offer home services including housekeeping, meal preparation, laundry, and other daily tasks to maintain a clean and comfortable living environment.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Non-Medical Transportation (Escort)</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Non-Medical Transportation (Escort)</h3>
                         <p class="card-text">For clients needing assistance during travel, our trained escorts accompany and support them throughout their journey—ensuring comfort, safety, and peace of mind.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Companionship Services</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Companionship Services</h3>
                         <p class="card-text">Our caregivers provide meaningful companionship and emotional support through conversation, shared activities, and assistance with daily routines to combat loneliness.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Transition Coordination</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Transition Coordination</h3>
                         <p class="card-text">We assist clients transitioning between care settings by coordinating appointments, transportation, and home readiness for a smooth experience.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Extended Personal Care - Nurse</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Extended Personal Care - Nurse</h3>
                         <p class="card-text">Skilled nurses provide comprehensive personal care for clients with advanced health needs, including medication management, wound care, and routine monitoring.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Nurse Education</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Nurse Education</h3>
                         <p class="card-text">We offer nurse-led education programs to help clients and families understand health conditions, medications, and daily care requirements.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Extended Personal Care - Non-Nurse</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Extended Personal Care - Non-Nurse</h3>
                         <p class="card-text">Our trained caregivers assist with personal hygiene, grooming, feeding, and mobility support to maintain comfort and dignity.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Personal Care Service/Waiver - Unit Rate</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Personal Care Service/Waiver - Unit Rate</h3>
                         <p class="card-text">Tailored personal care services designed under waiver programs, ensuring accessible, affordable, and quality in-home support.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Respite Care</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Respite Care</h3>
                         <p class="card-text">We provide temporary relief for family caregivers by taking over their duties for a period, ensuring clients receive continuous care.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Supervision</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Supervision</h3>
                         <p class="card-text">Our supervision services ensure clients remain safe and supported at home or in the community, providing oversight and assistance with daily activities.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Personal Care Service - Unit Rate</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Personal Care Service - Unit Rate</h3>
                         <p class="card-text">Customized assistance for hygiene, dressing, meal prep, and other essential activities—charged per service unit for flexibility.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Chore - Snow Removal</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Chore - Snow Removal</h3>
                         <p class="card-text">Keep pathways safe during winter. Our snow removal team clears driveways, sidewalks, and entrances to ensure accessibility and prevent accidents.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">One Time Transition Costs</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Chore - Snow Removal</h3>
+                        <p class="card-text">Keep pathways safe during winter. Our snow removal team clears driveways, sidewalks, and entrances to ensure accessibility and prevent accidents.</p>
+                    </div>
+                    
+                </a>
+            </div>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">One Time Transition Costs</h3>
                         <p class="card-text">We assist with one-time transition costs related to moving or setting up a new care environment, helping clients settle safely and comfortably.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-
-            <div class="col-md-6 col-lg-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <h5 class="card-title fw-bold">Chore - Labor</h5>
+            <div class="col">
+                <a class="card card-hover-primary bg-secondary border-0 h-100 text-decoration-none" href="#">
+                    <div class="card-body pb-0 mb-sm-5">
+                        <svg class="d-block text-warning mb-4" width="40" height="40">
+                        </svg>
+                        <h3 class="h4 card-title mt-0">Chore - Labor</h3>
                         <p class="card-text">We provide reliable general labor services, including home maintenance, moving support, and light repairs to maintain a safe living space.</p>
                     </div>
-                </div>
+                    
+                </a>
             </div>
-        
-        </div>
-    </section>
+            </div>
+
+   
 
 
     <!-- Additional Services -->
