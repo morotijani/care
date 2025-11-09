@@ -37,7 +37,7 @@
     }
 ?>
 
-        <section class="container pt-5 pb-lg-2 pb-xl-4 py-xxl-5 my-5">
+        <section class="container pt-5 py-xxl-5 my-5">
 
             <!-- Breadcrumb-->
             <nav aria-label="breadcrumb">

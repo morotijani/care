@@ -51,40 +51,40 @@
         </div>
     </section>
 
-     <!-- Stats -->
-      <section class="container pb-2 pb-sm-3 pb-md-4 pb-lg-5 mb-xl-3 mb-xxl-5">
-        <div class="bg-light rounded-5 py-4 py-md-5 px-lg-5">
-          <div class="row row-cols-2 row-cols-md-4 g-0">
-            <div class="col d-md-flex justify-content-center text-center text-md-start position-relative">
-              <div class="position-absolute top-50 end-0 translate-middle-y border-end" style="height: 60px;"></div>
-              <div class="p-3 px-sm-0 py-sm-4">
-                <div class="h2 display-5 text-primary mb-0">540+</div>
-                <span>Happy clients</span>
-              </div>
+    <!-- Stats -->
+    <section class="bg-secondary pb-2 pb-sm-3 pb-md-4 pb-lg-5 mb-xl-3 mb-xxl-5">
+        <div class="container rounded-5 py-4 py-md-5 px-lg-5">
+            <div class="row row-cols-2 row-cols-md-4 g-0">
+                <div class="col d-md-flex justify-content-center text-center text-md-start position-relative">
+                    <div class="position-absolute top-50 end-0 translate-middle-y border-end" style="height: 60px;"></div>
+                    <div class="p-3 px-sm-0 py-sm-4">
+                        <div class="h2 display-5 text-primary mb-0">540+</div>
+                        <span>Happy clients</span>
+                    </div>
+                </div>
+                <div class="col d-md-flex justify-content-center text-center text-md-start position-relative">
+                    <div class="position-absolute top-50 end-0 translate-middle-y border-end d-none d-md-block" style="height: 60px;"></div>
+                    <div class="p-3 px-sm-0 py-sm-4">
+                        <div class="h2 display-5 text-primary mb-0">10+</div>
+                        <span>Services</span>
+                    </div>
+                </div>
+                <div class="col d-md-flex justify-content-center text-center text-md-start position-relative">
+                    <div class="position-absolute top-50 end-0 translate-middle-y border-end" style="height: 60px;"></div>
+                        <div class="p-3 px-sm-0 py-sm-4">
+                            <div class="h2 display-5 text-primary mb-0">10+</div>
+                            <span>Full time specialists</span>
+                        </div>
+                    </div>
+                    <div class="col d-md-flex justify-content-center text-center text-md-start position-relative">
+                    <div class="p-3 px-sm-0 py-sm-4">
+                        <div class="h2 display-5 text-primary mb-0">100%</div>
+                        <span>Good times</span>
+                    </div>
+                </div>
             </div>
-            <div class="col d-md-flex justify-content-center text-center text-md-start position-relative">
-              <div class="position-absolute top-50 end-0 translate-middle-y border-end d-none d-md-block" style="height: 60px;"></div>
-              <div class="p-3 px-sm-0 py-sm-4">
-                <div class="h2 display-5 text-primary mb-0">10+</div>
-                <span>Services</span>
-              </div>
-            </div>
-            <div class="col d-md-flex justify-content-center text-center text-md-start position-relative">
-              <div class="position-absolute top-50 end-0 translate-middle-y border-end" style="height: 60px;"></div>
-              <div class="p-3 px-sm-0 py-sm-4">
-                <div class="h2 display-5 text-primary mb-0">10+</div>
-                <span>Full time specialists</span>
-              </div>
-            </div>
-            <div class="col d-md-flex justify-content-center text-center text-md-start position-relative">
-              <div class="p-3 px-sm-0 py-sm-4">
-                <div class="h2 display-5 text-primary mb-0">15</div>
-                <span>Awards won</span>
-              </div>
-            </div>
-          </div>
         </div>
-      </section>
+    </section>
 
 
      <!-- Services -->
@@ -276,63 +276,63 @@
     <!-- Testimonials carousel -->
     <section class="bg-secondary">
         <div class="container py-5 mb-1 mb-sm-2 my-lg-3 my-xl-4 my-xxl-5">
-        <div class="row justify-content-center pt-2 pt-sm-4 pb-4 mb-2 mb-lg-3">
-            <div class="col-lg-8 col-xl-7 col-xxl-6 text-center pt-2">
-                <h2 class="h1 mb-1">Testimonials from our clients</h2>
+            <div class="row justify-content-center pt-2 pt-sm-4 pb-4 mb-2 mb-lg-3">
+                <div class="col-lg-8 col-xl-7 col-xxl-6 text-center pt-2">
+                    <h2 class="h1 mb-1">Testimonials from our clients</h2>
+                </div>
             </div>
-        </div>
-        <div class="swiper pb-2 pb-sm-4" data-swiper-options='{
-            "slidesPerView": 1,
-            "spaceBetween": 24,
-            "loop": true,
-            "pagination": {
-                "el": ".swiper-pagination",
-                "clickable": true
-            },
-            "breakpoints": {
-                "800": {
-                    "slidesPerView": 2
+            <div class="swiper pb-2 pb-sm-4" data-swiper-options='{
+                "slidesPerView": 1,
+                "spaceBetween": 24,
+                "loop": true,
+                "pagination": {
+                    "el": ".swiper-pagination",
+                    "clickable": true
+                },
+                "breakpoints": {
+                    "800": {
+                        "slidesPerView": 2
+                    }
                 }
-            }
-        }'>
-            <div class="swiper-wrapper pt-5">
+            }'>
+                <div class="swiper-wrapper pt-5">
 
-                <!-- Item -->
-                <div class="swiper-slide h-auto">
-                    <div class="card border-0 bg-info bg-opacity-10 h-100 text-center">
-                        <div class="polygon-avatar bg-info mx-auto translate-middle-y">
-                            <img src="<?= PROOT; ?>assets/media/default-profile.png" alt="Sarah Johnson">
+                    <!-- Item -->
+                    <div class="swiper-slide h-auto">
+                        <div class="card border-0 bg-info bg-opacity-10 h-100 text-center">
+                            <div class="polygon-avatar bg-info mx-auto translate-middle-y">
+                                <img src="<?= PROOT; ?>assets/media/default-profile.png" alt="Sarah Johnson">
+                            </div>
+                            <div class="card-body pt-0 mt-n4">
+                                <p class="card-text fs-xl">"The caregiver assigned to my mother was exceptional. She was professional, compassionate, and truly cared about my mother's well-being. I highly recommend this service to anyone looking for quality home care."</p>
+                            </div>
+                            <div class="card-footer border-0 pt-0">
+                                <div class="h4 mb-1">Sarah Johnson</div>
+                                <span>Elderly Care Client</span>
+                            </div>
                         </div>
-                        <div class="card-body pt-0 mt-n4">
-                            <p class="card-text fs-xl">"The caregiver assigned to my mother was exceptional. She was professional, compassionate, and truly cared about my mother's well-being. I highly recommend this service to anyone looking for quality home care."</p>
-                        </div>
-                        <div class="card-footer border-0 pt-0">
-                            <div class="h4 mb-1">Sarah Johnson</div>
-                            <span>Elderly Care Client</span>
+                    </div>
+
+                    <!-- Item -->
+                    <div class="swiper-slide h-auto">
+                        <div class="card border-0 bg-warning bg-opacity-10 h-100 text-center">
+                            <div class="polygon-avatar bg-warning mx-auto translate-middle-y">
+                                <img src="<?= PROOT; ?>assets/media/default-profile.png" alt="Michael & Lisa Thompson">
+                            </div>
+                            <div class="card-body pt-0 mt-n4">
+                                <p class="card-text fs-xl">"Finding reliable childcare was a challenge until we discovered this service. Our caregiver is amazing with our children, and we feel completely at ease knowing they are in good hands."</p>
+                            </div>
+                            <div class="card-footer border-0 pt-0">
+                                <div class="h4 mb-1">Michael & Lisa Thompson</div>
+                                <span>Child Care Clients</span>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Item -->
-                <div class="swiper-slide h-auto">
-                    <div class="card border-0 bg-warning bg-opacity-10 h-100 text-center">
-                        <div class="polygon-avatar bg-warning mx-auto translate-middle-y">
-                            <img src="<?= PROOT; ?>assets/media/default-profile.png" alt="Michael & Lisa Thompson">
-                        </div>
-                        <div class="card-body pt-0 mt-n4">
-                            <p class="card-text fs-xl">"Finding reliable childcare was a challenge until we discovered this service. Our caregiver is amazing with our children, and we feel completely at ease knowing they are in good hands."</p>
-                        </div>
-                        <div class="card-footer border-0 pt-0">
-                            <div class="h4 mb-1">Michael & Lisa Thompson</div>
-                            <span>Child Care Clients</span>
-                        </div>
-                    </div>
-                </div>
+                <!-- Pagination (bullets) -->
+                <div class="swiper-pagination position-relative bottom-0 mt-2 mt-lg-3 pt-4"></div>
             </div>
-
-            <!-- Pagination (bullets) -->
-            <div class="swiper-pagination position-relative bottom-0 mt-2 mt-lg-3 pt-4"></div>
-        </div>
         </div>
     </section>
 
@@ -353,5 +353,24 @@
             </div>
         </div>
     </section>
+
+    <section class="container pt-5 pb-sm-3 mt-2 mt-sm-4 mb-2 mb-md-3 mb-lg-4 mb-xxl-5">
+        <!-- Item -->
+        <div class="row align-items-center pt-xl-2 pb-5 mb-lg-2 mb-xl-3 mb-xxl-4">
+            <div class="col-md-7 col-lg-6 mb-4 mb-md-0">
+                <a class="d-block position-relative" href="portfolio-single-v1.html">
+                    <div class="bg-danger rounded-5 position-absolute top-0 start-0 w-100 h-100" data-aos="zoom-in" data-aos-duration="600" data-aos-offset="250"></div>
+                    <img class="d-block position-relative z-2 ms-auto" src="<?= PROOT; ?>assets/media/community.jpeg" style="width: 536px; height: 436px; object-fit: contain" alt="Image" data-aos="fade-in" data-aos-duration="400" data-aos-offset="250">
+                </a>
+            </div>
+            <div class="col-md-5 col-xl-4 offset-lg-1" data-aos="fade-up" data-aos-duration="400" data-aos-offset="170">
+                <div class="ps-md-3 ps-lg-0">
+                    <h2 class="h4 mb-lg-4">We are serving Bismarck Mandan surrounding community.</h2>
+                    <p class="fs-sm pb-3 pb-lg-4 mb-3">Area of operations</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
 
 <?php include "system/inc/footer.php"; ?>

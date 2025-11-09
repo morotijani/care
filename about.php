@@ -6,9 +6,9 @@
 ?>
 
     <!-- Hero -->
-    <section class="bg-dark position-relative py-5">
-        <div class="d-none d-dark-mode-block position-absolute top-0 start-0 w-100 h-100" style="background-color: rgba(255,255,255, .03);"></div>
-            <div class="container position-relative z-2 py-5 mb-4 mb-sm-5" data-bs-theme="dark">
+    <section class="bg-secondary position-relative py-5">
+        <div class="d-none d-dark-mode-block position-absolute top-0 start-0 w-100 h-100"></div>
+            <div class="container position-relative z-2 py-5 mb-4 mb-sm-5">
                 <div class="row pb-5 mb-2 mb-sm-0 mb-lg-3">
                     <div class="col-lg-10 col-xl-9">
 
@@ -23,7 +23,7 @@
                         </nav>
 
                         <h1 class="display-2 pb-2 pb-sm-3">About Our Home Care Services</h1>
-                        <p class="fs-lg text-body">At Care that Feels like Home, we are dedicated to delivering compassionate, high-quality home health care to individuals and families in Bismarck, North Dakota. Our mission is to enhance the quality of life for our clients by supporting their independence, dignity, and well-being in the comfort of their own homes.
+                        <p class="fs-lg">At Care that Feels like Home, we are dedicated to delivering compassionate, high-quality home health care to individuals and families in Bismarck, North Dakota. Our mission is to enhance the quality of life for our clients by supporting their independence, dignity, and well-being in the comfort of their own homes.
                         <br>
                         <br>
                         We offer a full range of services including skilled nursing, personal care, physical and occupational therapy, and homemaker support. Whether you’re recovering from surgery, managing a chronic condition, or seeking daily assistance, our experienced and caring team is here to help.
@@ -39,7 +39,7 @@
         <section class="container py-5 my-md-2 my-lg-4">
             <div class="row align-items-center">
                 <div class="col-md-6 pb-2 pb-md-0 mb-4 mb-md-0">
-                    <div class="ratio ratio-16x9 bg-position-right rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/cover-4.jpg); background-size: cover;"></div>
+                    <div class="ratio ratio-16x9 bg-position-center rounded-3 overflow-hidden" style="background-image: url(<?= PROOT; ?>assets/media/mission.jpg); background-size: cover;"></div>
                 </div>
                 <div class="col-md-6">
                     <div class="ps-md-4 ps-lg-0">
@@ -195,6 +195,29 @@
                                 <div class="card-body d-flex flex-column justify-content-end h-100 position-relative z-2 text-center" data-bs-theme="dark">
                                     <h3 class="h5 mb-1">Kristen Johnson</h3>
                                     <p class="text-body mb-3">Registered Nurse</p>
+                                    <div class="d-flex justify-content-center">
+                                        <a class="btn btn-icon btn-sm btn-light btn-instagram rounded-circle mx-2" href="javascript:;" aria-label="Instagram">
+                                            <i class="ai-instagram"></i>
+                                        </a>
+                                        <a class="btn btn-icon btn-sm btn-light btn-facebook rounded-circle mx-2" href="javascript:;" aria-label="Facebook">
+                                            <i class="ai-facebook"></i>
+                                        </a>
+                                        <a class="btn btn-icon btn-sm btn-light btn-linkedin rounded-circle mx-2" href="javascript:;" aria-label="LinkedIn">
+                                            <i class="ai-linkedin"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="card card-hover border-0 rounded-5 overflow-hidden">
+                            <img src="<?= PROOT; ?>assets/media/team/Kristin-Olson.jpg" alt="Image" class="img-fluid" style="width: auto; height: 400px; object-fit: cover; object-position: top;">
+                            <div class="position-absolute top-0 start-0 w-100 h-100 opacity-0">
+                                <div class="bg-dark position-absolute top-0 start-0 w-100 h-100 opacity-50"></div>
+                                <div class="card-body d-flex flex-column justify-content-end h-100 position-relative z-2 text-center" data-bs-theme="dark">
+                                    <h3 class="h5 mb-1">Kristin Olson</h3>
+                                    <p class="text-body mb-3">BSN</p>
                                     <div class="d-flex justify-content-center">
                                         <a class="btn btn-icon btn-sm btn-light btn-instagram rounded-circle mx-2" href="javascript:;" aria-label="Instagram">
                                             <i class="ai-instagram"></i>
