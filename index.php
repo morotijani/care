@@ -1,6 +1,7 @@
 <?php
     require_once "system/DatabaseConnector.php";
     $title = "Home Care Services";
+    $body_class = '';
     include "system/inc/head.php";
     include "system/inc/nav.php";
 ?>

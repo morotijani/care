@@ -1,6 +1,7 @@
 <?php
     $title = "Our Services - ";
     require_once "system/DatabaseConnector.php";
+    $body_class = '';
     include "system/inc/head.php";
     include "system/inc/nav.php";
 
@@ -195,54 +196,7 @@
                 </a>
             </div>
         </div>
-
-   
-
-
-    <!-- Additional Services -->
-    <!-- <section class="container py-5 my-md-2 my-lg-4 border-top">
-        <div class="row justify-content-center text-center pb-4 mb-2 mb-lg-3">
-            <div class="col-lg-8 col-xl-7 col-xxl-6">
-                <h2 class="h1 mb-lg-4">Additional Services</h2>
-                <p class="fs-lg text-muted mb-0">We offer a range of supplementary services to complement our core care offerings.</p>
-            </div>
-        </div>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
-            <div class="col">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <div class="d-table bg-secondary rounded-3 p-3 mb-4">
-                            <i class="ai-home d-block h3 text-primary mb-0"></i>
-                        </div>
-                        <h3 class="h5 mb-2">Household Management</h3>
-                        <p class="fs-sm mb-0">Light housekeeping, laundry, meal preparation, grocery shopping, and other household tasks to maintain a clean and comfortable living environment.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <div class="d-table bg-secondary rounded-3 p-3 mb-4">
-                            <i class="ai-rocket d-block h3 text-primary mb-0"></i>
-                        </div>
-                        <h3 class="h5 mb-2">Transportation Services</h3>
-                        <p class="fs-sm mb-0">Safe and reliable transportation to medical appointments, social activities, shopping, and other outings to help maintain independence and social connections.</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-body">
-                        <div class="d-table bg-secondary rounded-3 p-3 mb-4">
-                            <i class="ai-calendar d-block h3 text-primary mb-0"></i>
-                        </div>
-                        <h3 class="h5 mb-2">Respite Care</h3>
-                        <p class="fs-sm mb-0">Temporary relief for family caregivers, allowing them to take a break while ensuring their loved ones receive the care they need.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section> -->
+    </section>
 
     <!-- CTA section -->
     <section class="container py-5 my-md-2 my-lg-4">
