@@ -52,6 +52,7 @@ function get_admin_WaitCounts($dbConnection) {
 	$counts = [
 		'pending_requests'     => 0,
 		'pending_applications' => 0,
+		'pending_onboarding'   => 0,
 		'unread_messages'      => 0,
 		'active_caregivers'    => 0,
 		'active_assignments'   => 0,
@@ -59,6 +60,7 @@ function get_admin_WaitCounts($dbConnection) {
 	try {
 		$counts['pending_requests'] = (int)$dbConnection->query("SELECT COUNT(*) FROM care_service_requests WHERE request_status = 'pending'")->fetchColumn();
 		$counts['pending_applications'] = (int)$dbConnection->query("SELECT COUNT(*) FROM care_applications WHERE application_status = 'pending'")->fetchColumn();
+		$counts['pending_onboarding'] = (int)$dbConnection->query("SELECT COUNT(*) FROM care_staff_onboarding WHERE onboarding_status = 'pending'")->fetchColumn();
 		$counts['unread_messages'] = (int)$dbConnection->query("SELECT COUNT(*) FROM care_contact_messages WHERE message_status = 'unread'")->fetchColumn();
 		$counts['active_caregivers'] = (int)$dbConnection->query("SELECT COUNT(*) FROM care_users WHERE user_type = 'caregiver' AND user_status = 'active'")->fetchColumn();
 		$counts['active_assignments'] = (int)$dbConnection->query("SELECT COUNT(*) FROM care_assignments WHERE assignment_status = 'active'")->fetchColumn();

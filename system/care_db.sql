@@ -196,6 +196,68 @@ CREATE TABLE IF NOT EXISTS `care_reviews` (
   CONSTRAINT `care_reviews_ibfk_3` FOREIGN KEY (`review_assignment_id`) REFERENCES `care_assignments` (`assignment_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `care_staff_onboarding`
+--
+
+CREATE TABLE IF NOT EXISTS `care_staff_onboarding` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `onboarding_id` varchar(100) NOT NULL,
+  `staff_name` varchar(120) NOT NULL,
+  `staff_email` varchar(120) NOT NULL,
+  `staff_phone` varchar(30) NOT NULL,
+  `staff_address` varchar(255) DEFAULT NULL,
+  `gov_id_type` varchar(80) DEFAULT NULL,
+  `gov_id_number` varchar(80) DEFAULT NULL,
+  `gov_id_file` varchar(255) DEFAULT NULL,
+  `ssn_number` varchar(30) DEFAULT NULL,
+  `ssn_file` varchar(255) DEFAULT NULL,
+  `background_check_status` varchar(80) DEFAULT NULL,
+  `background_check_file` varchar(255) DEFAULT NULL,
+  `fwa_status` varchar(80) DEFAULT NULL,
+  `fwa_certificate_file` varchar(255) DEFAULT NULL,
+  `credential_type` varchar(150) DEFAULT NULL,
+  `credential_number` varchar(100) DEFAULT NULL,
+  `credential_file` varchar(255) DEFAULT NULL,
+  `chore_labor` varchar(255) DEFAULT NULL,
+  `chore_labor_notes` text DEFAULT NULL,
+  `bank_name` varchar(120) DEFAULT NULL,
+  `account_type` varchar(50) DEFAULT NULL,
+  `routing_number` varchar(50) DEFAULT NULL,
+  `account_number` varchar(50) DEFAULT NULL,
+  `direct_deposit_file` varchar(255) DEFAULT NULL,
+  `w4_filing_status` varchar(100) DEFAULT NULL,
+  `w4_file` varchar(255) DEFAULT NULL,
+  `i9_work_status` varchar(100) DEFAULT NULL,
+  `i9_file` varchar(255) DEFAULT NULL,
+  `therap_status` varchar(80) DEFAULT NULL,
+  `therap_username` varchar(100) DEFAULT NULL,
+  `policy_declaration` tinyint(1) NOT NULL DEFAULT 0,
+  `compliance_agreed` tinyint(1) NOT NULL DEFAULT 0,
+  `policy_procedures_agreed` tinyint(1) NOT NULL DEFAULT 0,
+  `reporting_agreed` tinyint(1) NOT NULL DEFAULT 0,
+  `digital_signature` varchar(120) DEFAULT NULL,
+  `signature_date` date DEFAULT NULL,
+  `drivers_license_number` varchar(80) DEFAULT NULL,
+  `drivers_license_state` varchar(50) DEFAULT NULL,
+  `drivers_license_expiry` date DEFAULT NULL,
+  `drivers_license_file` varchar(255) DEFAULT NULL,
+  `drivers_insurance_provider` varchar(120) DEFAULT NULL,
+  `drivers_insurance_policy` varchar(100) DEFAULT NULL,
+  `drivers_insurance_file` varchar(255) DEFAULT NULL,
+  `additional_notes` text DEFAULT NULL,
+  `admin_notes` text DEFAULT NULL,
+  `onboarding_status` enum('pending','in_review','approved','rejected') DEFAULT 'pending',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_onboarding_id` (`onboarding_id`),
+  KEY `idx_onboarding_status` (`onboarding_status`),
+  KEY `idx_staff_email` (`staff_email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

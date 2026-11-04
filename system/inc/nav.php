@@ -51,6 +51,9 @@
                         <a class="nav-link" href="<?= PROOT; ?>apply">Apply as caregiver</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="<?= PROOT; ?>onboarding">Staff onboarding</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="<?= PROOT; ?>contact">Contact us</a>
                     </li>
                     </ul>
@@ -63,4 +66,3 @@
                 </nav>
             </div>
         </header>
-        

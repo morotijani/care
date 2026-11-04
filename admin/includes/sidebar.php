@@ -1,12 +1,13 @@
 <?php
     $currentPage = basename($_SERVER['PHP_SELF'], '.php');
     $navCounts = get_admin_WaitCounts($dbConnection);
-    $totalAlerts = $navCounts['pending_requests'] + $navCounts['pending_applications'] + $navCounts['unread_messages'];
+    $totalAlerts = $navCounts['pending_requests'] + $navCounts['pending_applications'] + $navCounts['pending_onboarding'] + $navCounts['unread_messages'];
 
     $pageMeta = [
         'dashboard'    => ['title' => 'Executive Dashboard', 'sub' => 'Overview of care operations, applications & inquiries'],
         'requests'     => ['title' => 'Service Requests', 'sub' => 'Manage client home care requests and caregiver assignments'],
         'applications' => ['title' => 'Caregiver Applications', 'sub' => 'Review, vet, and onboard prospective caregivers'],
+        'onboarding'   => ['title' => 'Staff Onboarding Packets', 'sub' => 'Verify 13-point staff onboarding documents, tax forms & signed declarations'],
         'caregivers'   => ['title' => 'Caregivers & Assignments', 'sub' => 'Manage active care staff, rates, background checks & schedules'],
         'contacts'     => ['title' => 'Contact Inbox', 'sub' => 'Read and respond to website inquiries and messages'],
         'profile'      => ['title' => 'Account & Admin Settings', 'sub' => 'Manage your administrator profile, security & team access'],
@@ -53,6 +54,16 @@
                 </span>
                 <?php if ($navCounts['pending_applications'] > 0): ?>
                     <span class="sidebar-badge badge-alert" title="Pending applications"><?= $navCounts['pending_applications']; ?></span>
+                <?php endif; ?>
+            </a>
+
+            <a href="<?= PROOT; ?>admin/onboarding" class="sidebar-link <?= $currentPage === 'onboarding' ? 'active' : ''; ?>">
+                <span class="sidebar-link-left">
+                    <i class="fas fa-clipboard-check"></i>
+                    <span>Staff Onboarding</span>
+                </span>
+                <?php if ($navCounts['pending_onboarding'] > 0): ?>
+                    <span class="sidebar-badge badge-alert" title="Pending onboarding packets"><?= $navCounts['pending_onboarding']; ?></span>
                 <?php endif; ?>
             </a>
 
@@ -153,6 +164,12 @@
                             <a class="dropdown-item rounded-3 py-2 d-flex justify-content-between align-items-center" href="<?= PROOT; ?>admin/applications?status=pending">
                                 <span><i class="fas fa-user-nurse text-info me-2"></i>Pending Applications</span>
                                 <span class="badge bg-info text-dark rounded-pill"><?= $navCounts['pending_applications']; ?></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a class="dropdown-item rounded-3 py-2 d-flex justify-content-between align-items-center" href="<?= PROOT; ?>admin/onboarding?status=pending">
+                                <span><i class="fas fa-clipboard-check text-primary me-2"></i>Pending Onboarding</span>
+                                <span class="badge bg-primary rounded-pill"><?= $navCounts['pending_onboarding']; ?></span>
                             </a>
                         </li>
                         <li>

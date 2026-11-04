@@ -4,7 +4,7 @@
     <footer class="footer bg-secondary py-5">
         <div class="container pt-1 pt-sm-2 pt-md-3 pt-lg-4 pt-xl-5">
             <div class="border-bottom text-center pb-4">
-                <a class="navbar-brand d-inline-flex text-nav py-0 mb-3 mb-md-4" href="index.html">
+                <a class="navbar-brand d-inline-flex text-nav py-0 mb-3 mb-md-4" href="<?= PROOT; ?>">
                     <span class="text-primary flex-shrink-0 me-2">
                         <img src="<?= PROOT; ?>assets/media/logo/logo.jpg" class="img-fluid" width="35" height="35" alt="Care" style="border-radius: 5px;">
                     </span>
@@ -21,7 +21,10 @@
                         <a class="nav-link py-2 px-3 mx-1" href="<?= PROOT; ?>apply">Apply as a Caregiver</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link py-2 px-3 mx-1" href="#">Request for a Caregiver</a>
+                        <a class="nav-link py-2 px-3 mx-1" href="<?= PROOT; ?>onboarding">Staff Onboarding</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link py-2 px-3 mx-1" href="<?= PROOT; ?>request">Request for a Caregiver</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link py-2 px-3 mx-1" href="<?= PROOT; ?>contact">Contact</a>

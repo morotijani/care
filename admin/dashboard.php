@@ -14,6 +14,8 @@
     $contactsCount     = (int)$dbConnection->query("SELECT COUNT(*) FROM care_contact_messages")->fetchColumn();
     $caregiversCount   = (int)$dbConnection->query("SELECT COUNT(*) FROM care_users WHERE user_type = 'caregiver'")->fetchColumn();
     $assignmentsCount  = (int)$dbConnection->query("SELECT COUNT(*) FROM care_assignments WHERE assignment_status = 'active'")->fetchColumn();
+    $onboardingCount   = (int)$dbConnection->query("SELECT COUNT(*) FROM care_staff_onboarding")->fetchColumn();
+    $pendingOnboarding = (int)$dbConnection->query("SELECT COUNT(*) FROM care_staff_onboarding WHERE onboarding_status = 'pending'")->fetchColumn();
 
     // Status counts for applications
     $appStatus = ['pending' => 0, 'reviewed' => 0, 'approved' => 0, 'rejected' => 0];
@@ -161,6 +163,30 @@
                 </a>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Staff Onboarding Quick Access Bar -->
+<div class="card-modern p-3 px-4 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="border-left: 4px solid #0d9488;">
+    <div class="d-flex align-items-center gap-3">
+        <div class="stat-icon" style="width: 42px; height: 42px; background: #ccfbf1; color: #0f766e;">
+            <i class="fas fa-clipboard-check"></i>
+        </div>
+        <div>
+            <h6 class="fw-bold mb-0">Staff Onboarding Portal (13-Point Packet)</h6>
+            <div class="text-muted small">
+                <strong><?= number_format($onboardingCount); ?></strong> total submissions &bull;
+                <strong class="text-warning-emphasis"><?= number_format($pendingOnboarding); ?></strong> awaiting HR verification
+            </div>
+        </div>
+    </div>
+    <div class="d-flex flex-wrap gap-2">
+        <a href="<?= PROOT; ?>onboarding" target="_blank" class="btn btn-sm btn-light border fw-semibold">
+            <i class="fas fa-external-link-alt me-1 text-secondary"></i>Public Onboarding Form
+        </a>
+        <a href="<?= PROOT; ?>admin/onboarding" class="btn btn-sm btn-teal">
+            Manage Onboarding <i class="fas fa-arrow-right ms-1"></i>
+        </a>
     </div>
 </div>
 
