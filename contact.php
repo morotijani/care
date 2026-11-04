@@ -18,15 +18,22 @@
             redirect(PROOT . "contact");
 
         } else {
-            // Here you would typically save to database and/or send email
+            // Auto-classify incoming message for spam vs importance
+            $classification = classify_contact_message($name, $email, $phone, $subject, $message);
+
             $sql = "
-                INSERT INTO `care_contact_messages`(`message_id`, `message_name`, `message_email`, `message_phone`, `message_subject`, `message_message`) 
-                VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO `care_contact_messages`(
+                    `message_id`, `message_name`, `message_email`, `message_phone`, 
+                    `message_subject`, `message_message`, `is_important`, `is_spam`, `spam_reason`
+                ) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ";
             $statement = $dbConnection->prepare($sql);
-            $result = $statement->execute([guidv4(), $name, $email, $phone, $subject, $message]);
+            $result = $statement->execute([
+                guidv4(), $name, $email, $phone, $subject, $message,
+                $classification['is_important'], $classification['is_spam'], $classification['spam_reason']
+            ]);
             if ($result) {
-                // For now, we'll just show a success message
                 $_SESSION["flash_success"] = "Thank you for your message! We will get back to you soon.";
                 redirect(PROOT . "contact");
             } else {

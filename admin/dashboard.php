@@ -11,7 +11,8 @@
     // Accurate counts using fetchColumn() (fixes previous rowCount() on SELECT COUNT(*) bug)
     $requestsCount     = (int)$dbConnection->query("SELECT COUNT(*) FROM care_service_requests")->fetchColumn();
     $applicationsCount = (int)$dbConnection->query("SELECT COUNT(*) FROM care_applications")->fetchColumn();
-    $contactsCount     = (int)$dbConnection->query("SELECT COUNT(*) FROM care_contact_messages")->fetchColumn();
+    $contactsCount     = (int)$dbConnection->query("SELECT COUNT(*) FROM care_contact_messages WHERE is_spam = 0")->fetchColumn();
+    $spamContactsCount = (int)$dbConnection->query("SELECT COUNT(*) FROM care_contact_messages WHERE is_spam = 1")->fetchColumn();
     $caregiversCount   = (int)$dbConnection->query("SELECT COUNT(*) FROM care_users WHERE user_type = 'caregiver'")->fetchColumn();
     $assignmentsCount  = (int)$dbConnection->query("SELECT COUNT(*) FROM care_assignments WHERE assignment_status = 'active'")->fetchColumn();
     $onboardingCount   = (int)$dbConnection->query("SELECT COUNT(*) FROM care_staff_onboarding")->fetchColumn();
@@ -35,9 +36,9 @@
         }
     }
 
-    // Status counts for contact messages
+    // Status counts for legitimate contact messages
     $msgStatus = ['unread' => 0, 'read' => 0, 'replied' => 0];
-    $msgStatusStmt = $dbConnection->query("SELECT message_status, COUNT(*) as count FROM care_contact_messages GROUP BY message_status");
+    $msgStatusStmt = $dbConnection->query("SELECT message_status, COUNT(*) as count FROM care_contact_messages WHERE is_spam = 0 GROUP BY message_status");
     foreach ($msgStatusStmt->fetchAll() as $row) {
         if (isset($msgStatus[$row['message_status']])) {
             $msgStatus[$row['message_status']] = (int)$row['count'];
@@ -50,8 +51,8 @@
     // Fetch 5 most recent applications
     $recentApplications = $dbConnection->query("SELECT * FROM care_applications ORDER BY created_at DESC LIMIT 5")->fetchAll();
 
-    // Fetch 5 most recent contact messages
-    $recentMessages = $dbConnection->query("SELECT * FROM care_contact_messages ORDER BY created_at DESC LIMIT 5")->fetchAll();
+    // Fetch 5 most recent legitimate contact messages (prioritizing important)
+    $recentMessages = $dbConnection->query("SELECT * FROM care_contact_messages WHERE is_spam = 0 ORDER BY is_important DESC, created_at DESC LIMIT 5")->fetchAll();
 
     function reqBadgeClass($status) {
         return match($status) {
@@ -134,7 +135,7 @@
             </div>
             <div class="d-flex align-items-center justify-content-between pt-2 border-top small">
                 <span class="text-muted">
-                    <strong class="text-danger"><?= $msgStatus['unread']; ?></strong> unread messages
+                    <strong class="text-danger"><?= $msgStatus['unread']; ?></strong> unread &bull; <span class="text-secondary"><?= $spamContactsCount; ?> spam</span>
                 </span>
                 <a href="<?= PROOT; ?>admin/contacts" class="text-decoration-none fw-semibold" style="color: #b45309;">
                     Open Inbox <i class="fas fa-arrow-right ms-1"></i>

@@ -165,10 +165,15 @@ CREATE TABLE IF NOT EXISTS `care_contact_messages` (
   `message_subject` varchar(100) DEFAULT NULL,
   `message_message` text NOT NULL,
   `message_status` enum('unread','read','replied') DEFAULT 'unread',
+  `is_important` tinyint(1) NOT NULL DEFAULT 0,
+  `is_spam` tinyint(1) NOT NULL DEFAULT 0,
+  `spam_reason` varchar(150) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
   PRIMARY KEY (`id`),
   KEY `idx_msg_status` (`message_status`),
+  KEY `idx_msg_important` (`is_important`),
+  KEY `idx_msg_spam` (`is_spam`),
   KEY `idx_msg_id` (`message_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
