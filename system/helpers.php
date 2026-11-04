@@ -10,178 +10,93 @@ function userLogin($user_id) {
 }
 
 function user_is_logged_in() {
-	if (isset($_SESSION['LVNUser']) && $_SESSION['LVNUser'] > 0) {
-		return true;
-	}
-	return false;
+	return !empty($_SESSION['LVNUser']);
 }
 
-// Redirect admin if !logged in
+// Redirect user if !logged in
 function user_login_redirect($url = 'auth/signin') {
 	$_SESSION['flash_error'] = 'You must be logged in to access that page.';
 	redirect(PROOT . $url);
 }
 
-// get user details by id
-function get_id_details($dbConnection, $id) {
-	$statement = $dbConnection->query("SELECT * FROM levina_users WHERE user_id = '" . $id . "'")->fetch(PDO::FETCH_ASSOC);
-	return $statement;
+// Safe HTML output that avoids double-encoding strings saved via sanitize()
+function e($value, $default = '') {
+	if ($value === null || $value === '') {
+		return htmlspecialchars((string)$default, ENT_QUOTES, 'UTF-8');
+	}
+	$decoded = html_entity_decode((string)$value, ENT_QUOTES | ENT_HTML5, 'UTF-8');
+	return htmlspecialchars($decoded, ENT_QUOTES, 'UTF-8');
 }
-
- // get list of products
- function count_products() {
-	global $dbConnection;
-	$statement = $dbConnection->query("SELECT * FROM levina_products WHERE product_trash = 0")->rowCount();
-	return $statement;
- }
- 
-// get list of products
-function get_products() {
-	global $dbConnection;
-	$statement = $dbConnection->query("SELECT * FROM levina_products WHERE product_trash = 0 ORDER BY createdAt DESC")->fetchAll(PDO::FETCH_ASSOC);
-	return $statement;
- }
-
-
-
 
 /////////////////////////////////////////////////// FOR ADMIN
 
 // Sessions For login
 function adminLogin($user_id) {
 	$_SESSION['CTFLHADMIN'] = $user_id;
-    $_SESSION['flash_success'] = 'You are now logged in!';
+    $_SESSION['flash_success'] = 'Welcome back! You are now logged in.';
     redirect(PROOT . 'admin/dashboard');
 }
 
 function admin_is_logged_in() {
-	if (isset($_SESSION['CTFLHADMIN']) && $_SESSION['CTFLHADMIN'] > 0) {
-		return true;
-	}
-	return false;
+	return !empty($_SESSION['CTFLHADMIN']);
 }
 
 // Redirect admin if !logged in
-function admin_login_redirect($url = 'admin/logout') {
-	$_SESSION['flash_error'] = 'You must be logged in to access that page.';
+function admin_login_redirect($url = 'admin/') {
+	$_SESSION['flash_error'] = 'Please sign in to access the admin console.';
 	redirect(PROOT . $url);
 }
 
-// GET ALL PRODUCTS WHERE TRASH = 0
-function get_all_product($product_trash = '') {
-	global $dbConnection;
-	$output = '';
-
-	$query = "
-		SELECT * FROM levina_products 
-		INNER JOIN levina_admin
-		ON levina_admin.admin_id = levina_products.product_added_by
-		WHERE levina_products.product_trash = :product_trash 
-		ORDER BY levina_products.id DESC
-	";
-	$statement = $dbConnection->prepare($query);
-	$statement->execute([':product_trash' => $product_trash]);
-	$count_products = $statement->rowCount();
-	$result = $statement->fetchAll();
-
-	if ($count_products > 0) {
-		$i = 1;
-		foreach ($result as $key => $row) {
-			$output .= '
-				<tr>
-					<td>' . $i . '</td>
-					<td>' . ucwords($row["product_name"]) . '</td>
-					<td>' . money($row["product_price"]) . '</td>
-					<td>' . ucwords($row["admin_fullname"]) . '</td>
-					<td>' . pretty_date($row["createdAt"]) . '</td>
-				';
-				if ($product_trash == 0) {
-					$output .= '
-						<td>
-							<a href="' . PROOT . 'admin/products?featured='.(($row['product_featured'] == 0)? "1" : "0") . '&id='.$row["product_id"].'" class="btn btn-sm btn-light">
-								<i class="bi bi-' . (($row['product_featured'] == 0) ? "plus" : "dash").'-circle-fill"></i> ' . (($row['product_featured'] == 0)?"" : "Featured product").'
-							</a>
-						</td>
-						<td>
-					';
-				} else {
-					$output .= '
-						<td>
-						</td>
-						<td>
-					';
-				}
-				if ($product_trash == 1) {
-					$output .= '
-						<a href="'.PROOT.'admin/products?permanent_delete='.$row["product_id"].'&upload_product_image_name='.$row["product_image"].'" class="btn btn-sm btn-outline-primary"><i class="bi bi-trash3"></i></a>&nbsp;
-                        <a href="'.PROOT.'admin/products?restore='.$row["product_id"].'" class="btn btn-sm btn-outline-danger"><i class="bi bi-recycle"></i></a>&nbsp;
-					';
-				} else {
-					$output .= '
-							<a href="'.PROOT.'admin/products?edit='.$row["product_id"].'" class="btn btn-sm btn-info"><i class="bi bi-pencil"></i></a>
-							<a href="'.PROOT.'admin/products?delete='.$row["product_id"].'" class="btn btn-sm btn-secondary"><i class="bi bi-trash3"></i></a>
-						';
-				}
-				$output .= '
-						</td>
-					</tr>
-				';
-			$i++;
-		}
-	} else {
-		$output = '
-			<tr>
-				<td colspan="9">No products found in the database.</h3></td>
-			</tr>
-		';
+// Get live badge counts for the admin sidebar & header
+function get_admin_WaitCounts($dbConnection) {
+	$counts = [
+		'pending_requests'     => 0,
+		'pending_applications' => 0,
+		'unread_messages'      => 0,
+		'active_caregivers'    => 0,
+		'active_assignments'   => 0,
+	];
+	try {
+		$counts['pending_requests'] = (int)$dbConnection->query("SELECT COUNT(*) FROM care_service_requests WHERE request_status = 'pending'")->fetchColumn();
+		$counts['pending_applications'] = (int)$dbConnection->query("SELECT COUNT(*) FROM care_applications WHERE application_status = 'pending'")->fetchColumn();
+		$counts['unread_messages'] = (int)$dbConnection->query("SELECT COUNT(*) FROM care_contact_messages WHERE message_status = 'unread'")->fetchColumn();
+		$counts['active_caregivers'] = (int)$dbConnection->query("SELECT COUNT(*) FROM care_users WHERE user_type = 'caregiver' AND user_status = 'active'")->fetchColumn();
+		$counts['active_assignments'] = (int)$dbConnection->query("SELECT COUNT(*) FROM care_assignments WHERE assignment_status = 'active'")->fetchColumn();
+	} catch (\Throwable $e) {
+		// Ignore silently if table not ready
 	}
-	return $output;
+	return $counts;
 }
 
-// get number of clients
-function get_number_of_clients() {
-	global $dbConnection;
-	$statement = $dbConnection->query("SELECT * FROM levina_leads WHERE lead_status = 0")->rowCount();
-	return $statement;
-}
-
-// get number of users
-function get_number_of_users() {
-	global $dbConnection;
-	$statement = $dbConnection->query("SELECT * FROM levina_users WHERE user_trash = 0")->rowCount();
-	return $statement;
-}
-
-// get number of products
-function get_number_of_products() {
-	global $dbConnection;
-	$statement = $dbConnection->query("SELECT * FROM levina_products WHERE product_trash = 0")->rowCount();
-	return $statement;
-}
-
-
-// get user by id
+// Get user by user_id
 function get_user($user_id) {
     global $dbConnection;
-    $query = "
-        SELECT * FROM levina_users 
-        WHERE user_id = ?
-    ";
+    $query = "SELECT * FROM care_users WHERE user_id = ? LIMIT 1";
     $statement = $dbConnection->prepare($query);
     $statement->execute([$user_id]);
-    $user = $statement->fetch(PDO::FETCH_OBJ);
-    return $user;
+    return $statement->fetch(PDO::FETCH_OBJ);
 }
 
-// get user by email
+// Get user by email
 function get_user_by_email($user_email) {
     global $dbConnection;
-    $query = "
-        SELECT * FROM levina_users 
-        WHERE user_email = :user_email
-    ";
+    $query = "SELECT * FROM care_users WHERE user_email = :user_email LIMIT 1";
     $statement = $dbConnection->prepare($query);
     $statement->execute([':user_email' => $user_email]);
-    $user = $statement->fetch(PDO::FETCH_OBJ);
-    return $user;
+    return $statement->fetch(PDO::FETCH_OBJ);
+}
+
+// Get all caregivers with their profile info
+function get_all_caregivers($dbConnection) {
+    $sql = "
+        SELECT u.*, 
+               p.profile_id, p.profile_experience, p.profile_service_type, 
+               p.profile_availability, p.profile_bio, p.profile_hourly_rate, 
+               p.profile_background_check_status
+        FROM care_users u
+        LEFT JOIN care_caregiver_profiles p ON u.user_id = p.profile_user_id
+        WHERE u.user_type = 'caregiver'
+        ORDER BY u.created_at DESC
+    ";
+    return $dbConnection->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 }

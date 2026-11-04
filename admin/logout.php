@@ -1,13 +1,7 @@
 <?php
     include_once ("../system/DatabaseConnector.php");
     
-    // Unset all session variables
-    $_SESSION = array();
+    unset($_SESSION['CTFLHADMIN']);
+    $_SESSION['flash_success'] = "You have been signed out safely.";
 
-    // Destroy the session
-    session_destroy();
-
-    // Redirect to login page
-    header("Location: index.php");
-    exit();
-?>
+    redirect(PROOT . 'admin/');

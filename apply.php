@@ -12,6 +12,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["apply_submit"])) {
     $experience = sanitize($_POST["experience"]);
     $service_type = sanitize($_POST["service_type"]);
     $availability = sanitize($_POST["availability"]);
+    $address = sanitize($_POST["address"] ?? "");
     $message = sanitize($_POST["message"]);
 
     // Basic validation
@@ -21,11 +22,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["apply_submit"])) {
     } else {
         // Here you would typically save to database and/or send email
         $sql = "
-                INSERT INTO `care_applications`(`application_id`, `application_name`, `application_email`, `application_phone`, `application_experience`, `application_service_type`, `application_availability`, `application_message`) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO `care_applications`(`application_id`, `application_name`, `application_email`, `application_phone`, `application_experience`, `application_service_type`, `application_availability`, `application_address`, `application_message`) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ";
         $statement = $dbConnection->prepare($sql);
-        $result = $statement->execute([guidv4(), $name, $email, $phone, $experience, $service_type, $availability, $message]);
+        $result = $statement->execute([guidv4(), $name, $email, $phone, $experience, $service_type, $availability, $address, $message]);
         if ($result) {
             // send email
             $to = $email;
@@ -155,6 +156,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["apply_submit"])) {
                                     <option value="Evenings only">Evenings only</option>
                                     <option value="Flexible">Flexible</option>
                                 </select>
+                            </div>
+                            <div class="col-12">
+                                <label for="address" class="form-label">Residential address (City, State)</label>
+                                <input type="text" id="address" name="address" class="form-control form-control-lg" placeholder="e.g., Bismarck, ND">
                             </div>
                             <div class="col-12">
                                 <label for="message" class="form-label">Tell us about yourself and your caregiving

@@ -27,7 +27,7 @@
 					if ($res == 'count') {
 						$response = $statement->rowCount();
 					} else if ($res == 'lastinsertid') {
-						$response = $conn->lastInserId();
+						$response = $conn->lastInsertId();
 					}
 
 				} else {

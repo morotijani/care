@@ -1,25 +1,35 @@
 <?php 
 
-    require dirname(__DIR__)  . '/bootstrap.php';
+    require dirname(__DIR__) . '/bootstrap.php';
+    require_once dirname(__DIR__) . "/config.php";
+    require_once ("Functions.php");
+    require_once ("helpers.php");
 	
-    $driver = $_ENV['DB_DRIVER'];
-    $hostname = $_ENV['DB_HOST'];
-    $port = $_ENV['DB_PORT'];
-    $database = $_ENV['DB_DATABASE'];
-    $username = $_ENV['DB_USERNAME'];
-    $password = $_ENV['DB_PASSWORD'];
+    $driver = $_ENV['DB_DRIVER'] ?? 'mysql';
+    $hostname = $_ENV['DB_HOST'] ?? 'localhost';
+    $port = $_ENV['DB_PORT'] ?? '3306';
+    $database = $_ENV['DB_DATABASE'] ?? 'care_db';
+    $username = $_ENV['DB_USERNAME'] ?? 'root';
+    $password = $_ENV['DB_PASSWORD'] ?? '';
 
     try {
-        $string = $driver . ":host=" . $hostname . ";charset=utf8mb4;dbname=" . $database;
+        $string = $driver . ":host=" . $hostname . ";port=" . $port . ";charset=utf8mb4;dbname=" . $database;
         $dbConnection = new \PDO(
-            $string, $username, $password
+            $string, $username, $password,
+            [
+                \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            ]
         );
     } catch (\PDOException $e) {
-        exit($e->getMessage());
+        exit("Database connection error: " . $e->getMessage());
     }
-    session_start();
 
-    if (isset($_SESSION['CTFLHADMIN'])) {
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    if (!empty($_SESSION['CTFLHADMIN'])) {
         $user_id = $_SESSION['CTFLHADMIN'];
         $data = array($user_id, 'admin');
         $sql = "
@@ -30,36 +40,34 @@
         ";
         $statement = $dbConnection->prepare($sql);
         $statement->execute($data);
-        if ($statement->rowCount() > 0) {
-            $admin_data = $statement->fetchAll();
-            $admin_data = $admin_data[0];
+        $admin_row = $statement->fetch(\PDO::FETCH_ASSOC);
+        if ($admin_row) {
+            $admin_data = $admin_row;
 
-            $fn = explode(' ', $admin_data['user_fullname']);
-            $admin_data['first'] = ucwords($fn[0]);
+            $fn = explode(' ', trim($admin_data['user_fullname']));
+            $admin_data['first'] = ucwords($fn[0] ?? 'Admin');
             $admin_data['last'] = '';
             if (count($fn) > 1) {
                 $admin_data['last'] = ucwords($fn[1]);
             }
-
         } else {
             unset($_SESSION['CTFLHADMIN']);
             redirect(PROOT . 'admin/');
         }
     }
 
-    require_once ("Functions.php");
-    require_once ("helpers.php");
-    require_once dirname(__DIR__) . "/config.php";
-
-    // Display on Messages on Errors And Success for users
+    // Display Messages on Errors And Success for users
  	$flash_user = '';
  	if (isset($_SESSION['flash_success'])) {
  	 	$flash_user = '
 			<div aria-live="polite" aria-atomic="true" class="position-fixed top-0 start-50 translate-middle-x rounded-3" style="z-index: 9999;">
 				<div class="p-3">
-					<div class="toast show text-bg-primary border-0" id="temporary">
-                        <div class="toast-body">
-                            ' . $_SESSION['flash_success'] . '
+					<div class="toast show align-items-center text-bg-success border-0 shadow-lg" id="temporary" role="alert">
+                        <div class="d-flex">
+                            <div class="toast-body fw-medium">
+                                <i class="fas fa-check-circle me-2"></i>' . $_SESSION['flash_success'] . '
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                         </div>
 					</div>
 				</div>
@@ -72,9 +80,12 @@
  	 	$flash_user = '
             <div aria-live="polite" aria-atomic="true" class="position-fixed top-0 start-50 translate-middle-x rounded-3" style="z-index: 9999;">
                 <div class="p-3">
-                    <div class="toast show text-bg-danger border-0" id="temporary">
-                        <div class="toast-body">
-                            ' . $_SESSION['flash_error'] . '
+                    <div class="toast show align-items-center text-bg-danger border-0 shadow-lg" id="temporary" role="alert">
+                        <div class="d-flex">
+                            <div class="toast-body fw-medium">
+                                <i class="fas fa-exclamation-circle me-2"></i>' . $_SESSION['flash_error'] . '
+                            </div>
+                            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
                         </div>
                     </div>
                 </div>
