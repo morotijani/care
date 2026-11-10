@@ -21,9 +21,6 @@
                         <a class="nav-link py-2 px-3 mx-1" href="<?= PROOT; ?>apply">Apply as a Caregiver</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link py-2 px-3 mx-1" href="<?= PROOT; ?>onboarding">Staff Onboarding</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link py-2 px-3 mx-1" href="<?= PROOT; ?>request">Request for a Caregiver</a>
                     </li>
                     <li class="nav-item">

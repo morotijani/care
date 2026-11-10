@@ -1,4 +1,33 @@
+# Disable directory browsing across the entire domain
+Options -Indexes
+
+# Block access to hidden dotfiles (.env, .git, .htaccess, etc.)
+<FilesMatch "^\.">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
+# Block direct HTTP access to sensitive configuration, database dumps, and encrypted vault files
+<FilesMatch "(^composer\.(json|lock)$|^bootstrap\.php$|^config\.php$|\.(sql|vault|enc|bak|log)$)">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
+</FilesMatch>
+
 RewriteEngine on
+
+# Deny direct HTTP access to internal system/, vendor/, and legacy onboarding upload directories
+RewriteRule ^(system|vendor)(/|$) - [F,L]
+RewriteRule ^assets/media/onboarding(/|$) - [F,L]
 
 RewriteRule ^xd192/delete.transaction/([0-9a-zA-Z-]+)$ xd192/delete.transaction.php?id=$1 [NC,L]
 RewriteRule ^admin/products/([0-9a-zA-Z]+)$ admin/products.php?edit=$1 [NC,L]
@@ -12,8 +41,6 @@ RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}\.php -f
 RewriteRule ^(.*)$ $1.php
 
-RewriteCond $1 !^(media|auth|helpers|fonts|assets|dist|admin|connection|robots\.txt)
+RewriteCond $1 !^(media|auth|helpers|fonts|assets|dist|admin|connection|robots\.txt|robot\.txt)
 
 RewriteRule ^([^\.]+)$ $1.php [NC,L]
-
-#ErrorDocument 404 https://sites.local/levina/404

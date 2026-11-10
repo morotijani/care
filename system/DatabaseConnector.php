@@ -4,6 +4,7 @@
     require_once dirname(__DIR__) . "/config.php";
     require_once ("Functions.php");
     require_once ("helpers.php");
+    require_once ("Security.php");
 	
     $driver = $_ENV['DB_DRIVER'] ?? 'mysql';
     $hostname = $_ENV['DB_HOST'] ?? 'localhost';
@@ -22,10 +23,24 @@
             ]
         );
     } catch (\PDOException $e) {
-        exit("Database connection error: " . $e->getMessage());
+        error_log("Database connection error: " . $e->getMessage());
+        http_response_code(500);
+        exit("Service temporarily unavailable.");
     }
 
     if (session_status() === PHP_SESSION_NONE) {
+        $isHttps = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+            || (isset($_SERVER['SERVER_PORT']) && (int)$_SERVER['SERVER_PORT'] === 443)
+            || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https');
+        @ini_set('session.use_strict_mode', '1');
+        @ini_set('session.cookie_httponly', '1');
+        session_set_cookie_params([
+            'lifetime' => 0,
+            'path'     => PROOT,
+            'secure'   => $isHttps,
+            'httponly' => true,
+            'samesite' => 'Lax',
+        ]);
         session_start();
     }
 

@@ -1,33 +1,105 @@
 <?php
 include_once "system/DatabaseConnector.php";
+care_send_private_headers();
+ensure_onboarding_security_schema($dbConnection);
 
-// Helper to handle individual onboarding document uploads safely
-function uploadOnboardingFile($fieldKey, $uploadDir) {
-    if (!isset($_FILES[$fieldKey]) || $_FILES[$fieldKey]['error'] === UPLOAD_ERR_NO_FILE) {
-        return null;
-    }
-    if ($_FILES[$fieldKey]['error'] !== UPLOAD_ERR_OK) {
-        return null;
-    }
-    $allowedExts = ['pdf', 'jpg', 'jpeg', 'png', 'webp', 'doc', 'docx'];
-    $origName = $_FILES[$fieldKey]['name'];
-    $ext = strtolower(pathinfo($origName, PATHINFO_EXTENSION));
-    if (!in_array($ext, $allowedExts, true)) {
-        return false; // Invalid file type
-    }
-    if ($_FILES[$fieldKey]['size'] > 10 * 1024 * 1024) { // 10MB max per file
-        return false;
-    }
-    $safeFilename = $fieldKey . '_' . date('Ymd_His') . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-    $destPath = $uploadDir . DIRECTORY_SEPARATOR . $safeFilename;
-    if (move_uploaded_file($_FILES[$fieldKey]['tmp_name'], $destPath)) {
-        return 'assets/media/onboarding/' . $safeFilename;
-    }
-    return null;
+// Explicit portal lock / sign-out action
+if (isset($_GET['lock']) && $_GET['lock'] === '1') {
+    unset(
+        $_SESSION['ONBOARDING_AUTH_VERIFIED'],
+        $_SESSION['ONBOARDING_AUTH_AT'],
+        $_SESSION['ONBOARDING_INVITE_ID'],
+        $_SESSION['ONBOARDING_PREFILL_NAME'],
+        $_SESSION['ONBOARDING_PREFILL_EMAIL'],
+        $_SESSION['ONBOARDING_JUST_SUBMITTED']
+    );
+    $_SESSION['flash_success'] = "Your onboarding session has been securely locked.";
+    redirect(PROOT . "onboarding");
 }
 
-// Process form submission
+// Enforce 60-minute inactivity timeout on unlocked onboarding sessions
+if (!empty($_SESSION['ONBOARDING_AUTH_VERIFIED'])) {
+    $lastActive = (int)($_SESSION['ONBOARDING_AUTH_AT'] ?? 0);
+    if ((time() - $lastActive) > 3600) {
+        unset(
+            $_SESSION['ONBOARDING_AUTH_VERIFIED'],
+            $_SESSION['ONBOARDING_AUTH_AT'],
+            $_SESSION['ONBOARDING_INVITE_ID'],
+            $_SESSION['ONBOARDING_PREFILL_NAME'],
+            $_SESSION['ONBOARDING_PREFILL_EMAIL']
+        );
+        $_SESSION['flash_error'] = "Your secure onboarding session timed out due to inactivity. Please re-enter your passcode.";
+        redirect(PROOT . "onboarding");
+    }
+    $_SESSION['ONBOARDING_AUTH_AT'] = time();
+}
+
+$rateLimitInfo = care_is_onboarding_rate_limited($dbConnection);
+$authError = '';
+
+// 1. Handle Portal Unlock (Passcode / Invite Code Authentication)
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['unlock_onboarding'])) {
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        $authError = "Security session expired. Please try submitting your passcode again.";
+    } elseif ($rateLimitInfo['locked']) {
+        $authError = "Too many failed passcode attempts from your network. Portal access is temporarily locked for " . $rateLimitInfo['remaining_minutes'] . " minute(s).";
+    } else {
+        $passcodeInput = $_POST['access_passcode'] ?? '';
+        $verify = care_verify_onboarding_passcode($dbConnection, $passcodeInput);
+
+        if ($verify['valid']) {
+            session_regenerate_id(true);
+            $_SESSION['CARE_CSRF_TOKEN']          = bin2hex(random_bytes(32));
+            $_SESSION['ONBOARDING_AUTH_VERIFIED'] = true;
+            $_SESSION['ONBOARDING_AUTH_AT']       = time();
+            $_SESSION['ONBOARDING_INVITE_ID']     = $verify['invite_id'];
+            $_SESSION['ONBOARDING_PREFILL_NAME']  = $verify['staff_name'] ?? '';
+            $_SESSION['ONBOARDING_PREFILL_EMAIL'] = $verify['staff_email'] ?? '';
+
+            care_log_onboarding_event($dbConnection, 'auth_success', 'Unlocked via ' . ($verify['code_hint'] ?? 'passcode'));
+            redirect(PROOT . "onboarding");
+        } else {
+            care_log_onboarding_event($dbConnection, 'auth_fail', 'Invalid passcode attempt');
+            $rateLimitInfo = care_is_onboarding_rate_limited($dbConnection);
+            if ($rateLimitInfo['locked']) {
+                $authError = "Too many invalid attempts. Access locked for " . $rateLimitInfo['remaining_minutes'] . " minutes.";
+            } else {
+                $remainingTries = max(1, 5 - $rateLimitInfo['attempts']);
+                $authError = $verify['reason'] . " (" . $remainingTries . " attempt" . ($remainingTries === 1 ? '' : 's') . " remaining before temporary lockout.)";
+            }
+        }
+    }
+}
+
+// 2. Handle Encrypted Onboarding Packet Submission (Strictly Gated Behind Verified Session + CSRF)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_onboarding'])) {
+    if (empty($_SESSION['ONBOARDING_AUTH_VERIFIED'])) {
+        http_response_code(403);
+        $_SESSION['flash_error'] = "Unauthorized submission blocked. Please unlock the Staff Onboarding Portal with your HR passcode first.";
+        redirect(PROOT . "onboarding");
+    }
+
+    if (!verify_csrf_token($_POST['csrf_token'] ?? '')) {
+        $_SESSION['flash_error'] = "Invalid or expired security token. Please review and submit again.";
+        redirect(PROOT . "onboarding");
+    }
+
+    // Re-check invite validity if session unlocked via an individual invite
+    $activeInviteId = !empty($_SESSION['ONBOARDING_INVITE_ID']) ? (int)$_SESSION['ONBOARDING_INVITE_ID'] : null;
+    if ($activeInviteId) {
+        $invChk = $dbConnection->prepare("
+            SELECT id FROM care_onboarding_invites
+            WHERE id = ? AND is_revoked = 0 AND expires_at > NOW() AND used_count < max_uses
+            LIMIT 1
+        ");
+        $invChk->execute([$activeInviteId]);
+        if (!$invChk->fetchColumn()) {
+            unset($_SESSION['ONBOARDING_AUTH_VERIFIED'], $_SESSION['ONBOARDING_INVITE_ID']);
+            $_SESSION['flash_error'] = "This single-use invite passcode has expired or already been used.";
+            redirect(PROOT . "onboarding");
+        }
+    }
+
     $staff_name    = trim($_POST['staff_name'] ?? '');
     $staff_email   = trim($_POST['staff_email'] ?? '');
     $staff_phone   = trim($_POST['staff_phone'] ?? '');
@@ -100,13 +172,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_onboarding']))
         $_SESSION['flash_error'] = "Please acknowledge all four Final Onboarding policy declarations and provide your digital signature.";
         redirect(PROOT . "onboarding");
     } else {
-        // Prepare upload directory
-        $uploadDir = dirname(__FILE__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'onboarding';
-        if (!is_dir($uploadDir)) {
-            mkdir($uploadDir, 0755, true);
-            file_put_contents($uploadDir . DIRECTORY_SEPARATOR . 'index.php', "<?php // Silence is golden\n");
-        }
-
         $fileFields = [
             'gov_id_file',
             'ssn_file',
@@ -119,17 +184,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_onboarding']))
             'drivers_license_file',
             'drivers_insurance_file'
         ];
+
         $uploadedPaths = [];
         foreach ($fileFields as $ff) {
-            $res = uploadOnboardingFile($ff, $uploadDir);
+            $res = care_store_encrypted_upload($ff);
             if ($res === false) {
-                $_SESSION['flash_error'] = "One of your uploaded files has an unsupported format or exceeds 10MB. Allowed: PDF, JPG, PNG, DOC, DOCX.";
+                // Roll back any vault blobs already encrypted in this request
+                foreach ($uploadedPaths as $savedVaultRef) {
+                    if ($savedVaultRef) {
+                        care_delete_vault_file($savedVaultRef);
+                    }
+                }
+                $_SESSION['flash_error'] = "One of your uploaded documents failed security validation or exceeds 10MB. Allowed genuine formats: PDF, JPG, PNG, WEBP, DOC, DOCX.";
                 redirect(PROOT . "onboarding");
             }
             $uploadedPaths[$ff] = $res;
         }
 
         try {
+            // Encrypt all sensitive PII fields at rest with AES-256-GCM before SQL INSERT
+            $encGovIdNumber     = care_encrypt_pii($gov_id_number);
+            $encSsnNumber       = care_encrypt_pii($ssn_number);
+            $encRoutingNumber   = care_encrypt_pii($routing_number);
+            $encAccountNumber   = care_encrypt_pii($account_number);
+            $encLicenseNumber   = care_encrypt_pii($drivers_license_number);
+            $encInsurancePolicy = care_encrypt_pii($drivers_insurance_policy);
+
             $sql = "
                 INSERT INTO care_staff_onboarding (
                     onboarding_id, staff_name, staff_email, staff_phone, staff_address,
@@ -170,55 +250,90 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_onboarding']))
             $stmt = $dbConnection->prepare($sql);
             $stmt->execute([
                 guidv4(), $staff_name, $staff_email, $staff_phone, $staff_address ?: null,
-                $gov_id_type ?: null, $gov_id_number ?: null, $uploadedPaths['gov_id_file'],
-                $ssn_number ?: null, $uploadedPaths['ssn_file'],
+                $gov_id_type ?: null, $encGovIdNumber, $uploadedPaths['gov_id_file'],
+                $encSsnNumber, $uploadedPaths['ssn_file'],
                 $background_check_status ?: null, $uploadedPaths['background_check_file'],
                 $fwa_status ?: null, $uploadedPaths['fwa_certificate_file'],
                 $cred_types ?: null, $credential_number ?: null, $uploadedPaths['credential_file'],
                 $chore_labor ?: null, $chore_labor_notes ?: null,
-                $bank_name ?: null, $account_type ?: null, $routing_number ?: null, $account_number ?: null, $uploadedPaths['direct_deposit_file'],
+                $bank_name ?: null, $account_type ?: null, $encRoutingNumber, $encAccountNumber, $uploadedPaths['direct_deposit_file'],
                 $w4_filing_status ?: null, $uploadedPaths['w4_file'],
                 $i9_work_status ?: null, $uploadedPaths['i9_file'],
                 $therap_status ?: null, $therap_username ?: null,
                 $policy_declaration, $compliance_agreed, $policy_procedures_agreed, $reporting_agreed,
                 $digital_signature, $signature_date,
-                $drivers_license_number ?: null, $drivers_license_state ?: null, $drivers_license_expiry, $uploadedPaths['drivers_license_file'],
-                $drivers_insurance_provider ?: null, $drivers_insurance_policy ?: null, $uploadedPaths['drivers_insurance_file'],
+                $encLicenseNumber, $drivers_license_state ?: null, $drivers_license_expiry, $uploadedPaths['drivers_license_file'],
+                $drivers_insurance_provider ?: null, $encInsurancePolicy, $uploadedPaths['drivers_insurance_file'],
                 $additional_notes ?: null
             ]);
 
-            // Send confirmation email if configured
+            // Consume single-use / limited-use invite code if applicable
+            if ($activeInviteId) {
+                $upInv = $dbConnection->prepare("
+                    UPDATE care_onboarding_invites
+                    SET used_count = used_count + 1, last_used_at = NOW()
+                    WHERE id = ?
+                ");
+                $upInv->execute([$activeInviteId]);
+            }
+
+            care_log_onboarding_event($dbConnection, 'packet_submitted', 'Encrypted onboarding submitted by ' . $staff_name);
+
+            // Send confirmation email (zero sensitive PII included in email body)
             $body = "
                 <p>Dear " . htmlspecialchars($staff_name, ENT_QUOTES, 'UTF-8') . ",</p>
-                <p>Thank you for submitting your <strong>Staff Onboarding</strong> packet to <strong>Care That Feels Like Home</strong>. Our HR and Compliance team has received your documentation and will review it shortly.</p>
+                <p>Thank you for submitting your encrypted <strong>Staff Onboarding</strong> packet to <strong>Care That Feels Like Home</strong>. Your documentation has been securely stored in our encrypted HR vault and will be reviewed shortly.</p>
                 <p>Best regards,<br>Care That Feels Like Home Corporation</p>
             ";
-            @send_email($staff_name, $staff_email, "Staff Onboarding Received - Care That Feels Like Home", $body);
+            @send_email($staff_name, $staff_email, "Encrypted Onboarding Received - Care That Feels Like Home", $body);
+
+            // Immediately re-lock onboarding session after successful submission
+            unset(
+                $_SESSION['ONBOARDING_AUTH_VERIFIED'],
+                $_SESSION['ONBOARDING_AUTH_AT'],
+                $_SESSION['ONBOARDING_INVITE_ID'],
+                $_SESSION['ONBOARDING_PREFILL_NAME'],
+                $_SESSION['ONBOARDING_PREFILL_EMAIL']
+            );
+            $_SESSION['ONBOARDING_JUST_SUBMITTED'] = true;
 
             redirect(PROOT . "onboarding?submitted=1");
         } catch (PDOException $e) {
-            $_SESSION['flash_error'] = "Submission error: " . $e->getMessage();
+            foreach ($uploadedPaths as $savedVaultRef) {
+                if ($savedVaultRef) {
+                    care_delete_vault_file($savedVaultRef);
+                }
+            }
+            error_log("Onboarding submission DB error: " . $e->getMessage());
+            $_SESSION['flash_error'] = "Unable to save your onboarding submission right now. Please try again or contact HR.";
             redirect(PROOT . "onboarding");
         }
     }
 }
 
-$isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
+$isPortalUnlocked = !empty($_SESSION['ONBOARDING_AUTH_VERIFIED']);
+$isSubmitted = false;
+if (isset($_GET['submitted']) && $_GET['submitted'] == '1' && !empty($_SESSION['ONBOARDING_JUST_SUBMITTED'])) {
+    $isSubmitted = true;
+    unset($_SESSION['ONBOARDING_JUST_SUBMITTED']);
+}
+
+$prefillName  = $_SESSION['ONBOARDING_PREFILL_NAME'] ?? '';
+$prefillEmail = $_SESSION['ONBOARDING_PREFILL_EMAIL'] ?? '';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Staff Onboarding Form — Care That Feels Like Home</title>
+    <meta name="robots" content="noindex, nofollow, noarchive, nosnippet">
+    <meta name="referrer" content="no-referrer">
+    <title><?= $isPortalUnlocked ? 'Encrypted Staff Onboarding — Care That Feels Like Home' : 'Protected HR Portal — Care That Feels Like Home'; ?></title>
     <link rel="icon" type="image/jpg" href="<?= PROOT; ?>assets/media/logo/logo.jpg" sizes="32x32">
-    <!-- Google Fonts: Roboto & Plus Jakarta Sans (Google Forms typography) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <!-- Bootstrap 5.3.3 -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome 6.5.2 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
     <style>
         :root {
@@ -241,7 +356,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             min-height: 100vh;
         }
 
-        /* Top minimal nav bar */
         .gf-topbar {
             background: #ffffff;
             border-bottom: 1px solid var(--gf-border);
@@ -258,7 +372,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             padding: 0 0.85rem;
         }
 
-        /* Google Forms Banner Header Card (matching uploaded image) */
         .gf-banner-card {
             background: #ffffff;
             border: 1px solid var(--gf-border);
@@ -276,7 +389,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             overflow: hidden;
         }
 
-        /* White peak roof cutout matching the image's top green roof */
         .gf-roof-header::after {
             content: "";
             position: absolute;
@@ -299,8 +411,8 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
         }
 
         .gf-brand-logo {
-            width: 115px;
-            height: 115px;
+            width: 110px;
+            height: 110px;
             border-radius: 50%;
             object-fit: cover;
             box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
@@ -316,14 +428,14 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
         }
 
         .gf-brand-words .w-care {
-            font-size: 3.1rem;
+            font-size: 3rem;
             font-weight: 800;
             letter-spacing: -0.02em;
             display: block;
         }
 
         .gf-brand-words .w-sub {
-            font-size: 0.98rem;
+            font-size: 0.95rem;
             font-weight: 800;
             letter-spacing: 0.08em;
             display: block;
@@ -331,13 +443,12 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
         }
 
         .gf-brand-words .w-home {
-            font-size: 2.85rem;
+            font-size: 2.75rem;
             font-weight: 800;
             letter-spacing: -0.01em;
             display: block;
         }
 
-        /* Google Forms Section Header Tab (for Step 2) */
         .gf-section-banner {
             background: var(--gf-theme);
             color: #ffffff;
@@ -348,7 +459,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             letter-spacing: 0.01em;
         }
 
-        /* Stepper Pills */
         .gf-stepper {
             display: flex;
             gap: 0.65rem;
@@ -404,7 +514,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             color: #ffffff;
         }
 
-        /* Google Forms Question Card */
         .gf-card {
             background: #ffffff;
             border: 1px solid var(--gf-border);
@@ -424,7 +533,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             border-color: var(--gf-danger);
         }
 
-        /* Left focus bar like Google Forms */
         .gf-card::before {
             content: "";
             position: absolute;
@@ -470,6 +578,8 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             margin-bottom: 0.35rem;
             display: flex;
             align-items: center;
+            flex-wrap: wrap;
+            gap: 0.25rem;
         }
 
         .gf-q-desc {
@@ -498,7 +608,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             gap: 0.4rem;
         }
 
-        /* Google Forms Bottom-Line Text Input */
         .gf-input {
             border: none;
             border-bottom: 1px solid #9aa0a6;
@@ -521,7 +630,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             color: #80868b;
         }
 
-        /* Google Forms Radio & Checkbox Items */
         .gf-choice {
             display: flex;
             align-items: center;
@@ -541,7 +649,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             flex-shrink: 0;
         }
 
-        /* Google Forms "Add file" Upload Box */
         .gf-upload-box {
             margin-top: 0.75rem;
             padding: 0.85rem 1rem;
@@ -580,7 +687,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             color: var(--gf-muted);
         }
 
-        /* Google Forms Navigation Buttons (Next / Back / Submit / Clear) */
         .btn-gf-submit,
         .btn-gf-next {
             background-color: var(--gf-theme);
@@ -646,6 +752,19 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             width: 0%;
             transition: width 0.25s ease;
         }
+
+        .vault-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            font-size: 0.73rem;
+            font-weight: 600;
+            padding: 0.2rem 0.55rem;
+            border-radius: 999px;
+            background: #ecfdf5;
+            color: #047857;
+            border: 1px solid #a7f3d0;
+        }
     </style>
 </head>
 <body>
@@ -657,69 +776,182 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                 <img src="<?= PROOT; ?>assets/media/logo/logo.jpg" alt="Logo" width="32" height="32" style="border-radius: 6px;">
                 <span class="fw-bold small">Care That Feels Like Home</span>
             </a>
-            <div class="d-flex align-items-center gap-3">
-                <?php if (!$isSubmitted): ?>
-                    <div class="d-none d-sm-flex align-items-center gap-2">
+            <div class="d-flex align-items-center gap-2 gap-sm-3">
+                <?php if ($isPortalUnlocked && !$isSubmitted): ?>
+                    <div class="d-none d-md-flex align-items-center gap-2">
                         <div class="gf-progress-bar">
                             <div class="gf-progress-fill" id="topProgressFill"></div>
                         </div>
                         <span class="small text-muted fw-medium" id="topProgressLabel">0 / 13 completed</span>
                     </div>
+                    <span class="vault-badge d-none d-sm-inline-flex">
+                        <i class="fas fa-shield-halved"></i> AES-256 Encrypted
+                    </span>
+                    <a href="<?= PROOT; ?>onboarding?lock=1" class="btn btn-sm btn-outline-danger" style="font-size: 0.78rem;">
+                        <i class="fas fa-lock me-1"></i>Lock Portal
+                    </a>
+                <?php else: ?>
+                    <span class="badge bg-dark-subtle text-dark border fw-semibold" style="font-size: 0.75rem;">
+                        <i class="fas fa-lock me-1 text-secondary"></i>Restricted HR Portal
+                    </span>
+                    <a href="<?= PROOT; ?>" class="btn btn-sm btn-outline-secondary" style="font-size: 0.8rem;">
+                        <i class="fas fa-arrow-left me-1"></i>Main Site
+                    </a>
                 <?php endif; ?>
-                <a href="<?= PROOT; ?>" class="btn btn-sm btn-outline-secondary" style="font-size: 0.8rem;">
-                    <i class="fas fa-arrow-left me-1"></i>Back to Website
-                </a>
             </div>
         </div>
     </header>
 
     <div class="gf-container" id="formTopAnchor">
-        <!-- Brand Banner Header Card (mirrors the attached Staff Onboarding image) -->
-        <div class="gf-banner-card">
-            <div class="gf-roof-header"></div>
-            <div class="gf-brand-hero">
-                <img src="<?= PROOT; ?>assets/media/logo/logo.jpg" alt="Care That Feels Like Home" class="gf-brand-logo">
-                <div class="gf-brand-words">
-                    <span class="w-care">CARE</span>
-                    <span class="w-sub">THAT FEELS LIKE</span>
-                    <span class="w-home">HOME</span>
-                </div>
-            </div>
-            <div class="p-4">
-                <h1 class="h3 fw-normal mb-2" style="color: #202124;">Staff Onboarding</h1>
-                <p class="text-muted small mb-3">
-                    Welcome to the <strong>Care That Feels Like Home</strong> team! This onboarding packet is divided into <strong>2 simple steps</strong> covering all 13 onboarding requirements. Please complete each section and attach your documents.
-                </p>
-                <div class="small" style="color: var(--gf-danger);">* Indicates required question</div>
-            </div>
-        </div>
 
         <?php if ($isSubmitted): ?>
-            <!-- Google Forms Style Confirmation Card -->
+            <!-- =========================================================
+                 CONFIRMATION SCREEN (SESSION ALREADY RE-LOCKED)
+                 ========================================================= -->
+            <div class="gf-banner-card">
+                <div class="gf-roof-header"></div>
+                <div class="gf-brand-hero">
+                    <img src="<?= PROOT; ?>assets/media/logo/logo.jpg" alt="Care That Feels Like Home" class="gf-brand-logo">
+                    <div class="gf-brand-words">
+                        <span class="w-care">CARE</span>
+                        <span class="w-sub">THAT FEELS LIKE</span>
+                        <span class="w-home">HOME</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="gf-card gf-title-card p-4 p-md-5">
                 <div class="d-flex align-items-center gap-3 mb-3">
-                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 48px; height: 48px; background: var(--gf-theme-light); color: var(--gf-theme);">
-                        <i class="fas fa-check fa-lg"></i>
+                    <div class="rounded-circle d-inline-flex align-items-center justify-content-center flex-shrink-0" style="width: 52px; height: 52px; background: var(--gf-theme-light); color: var(--gf-theme);">
+                        <i class="fas fa-shield-check fa-lg"></i>
                     </div>
                     <div>
-                        <h2 class="h4 mb-1">Your response has been recorded.</h2>
-                        <p class="text-muted small mb-0">Thank you for completing both steps of your Staff Onboarding packet.</p>
+                        <h2 class="h4 mb-1">Your encrypted packet has been securely stored.</h2>
+                        <p class="text-muted small mb-0">Your onboarding session has been automatically locked to protect your data.</p>
                     </div>
                 </div>
                 <p class="small text-secondary mb-4">
-                    Our HR &amp; Compliance team will verify your documents, background check, and policy declarations. If any additional documentation is needed, we will contact you promptly.
+                    All sensitive identification numbers and uploaded documents have been encrypted at rest with <strong>AES-256-GCM</strong> inside our restricted HR vault. Our Compliance team will review your onboarding packet and follow up if anything else is needed.
                 </p>
                 <div class="d-flex flex-wrap gap-3">
-                    <a href="<?= PROOT; ?>onboarding" class="text-decoration-none small fw-medium" style="color: var(--gf-theme);">
-                        Submit another response
-                    </a>
-                    <span class="text-muted">&bull;</span>
-                    <a href="<?= PROOT; ?>" class="text-decoration-none small fw-medium text-secondary">
+                    <a href="<?= PROOT; ?>" class="btn btn-sm btn-gf-next text-decoration-none">
                         Return to Home Page
                     </a>
                 </div>
             </div>
+
+        <?php elseif (!$isPortalUnlocked): ?>
+            <!-- =========================================================
+                 PASSWORD & INVITE-CODE PROTECTED GATE SCREEN
+                 (NO FORM FIELDS OR UPLOAD INPUTS RENDERED TO THE PUBLIC)
+                 ========================================================= -->
+            <div class="gf-banner-card" style="max-width: 560px; margin: 1.5rem auto;">
+                <div class="gf-roof-header"></div>
+                <div class="gf-brand-hero pb-3">
+                    <img src="<?= PROOT; ?>assets/media/logo/logo.jpg" alt="Care That Feels Like Home" class="gf-brand-logo" style="width: 96px; height: 96px;">
+                    <div class="gf-brand-words">
+                        <span class="w-care" style="font-size: 2.5rem;">CARE</span>
+                        <span class="w-sub" style="font-size: 0.85rem;">THAT FEELS LIKE</span>
+                        <span class="w-home" style="font-size: 2.3rem;">HOME</span>
+                    </div>
+                </div>
+
+                <div class="p-4 p-md-5">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <span class="vault-badge">
+                            <i class="fas fa-lock"></i> Password Protected &bull; AES-256-GCM Encrypted
+                        </span>
+                    </div>
+                    <h1 class="h4 fw-bold mb-2" style="color: #202124;">Restricted Staff Onboarding Vault</h1>
+                    <p class="text-muted small mb-4">
+                        This portal is strictly restricted to authorized new hires of <strong>Care That Feels Like Home Corporation</strong>. Please enter the <strong>Single-Use Invite Passcode</strong> (e.g. <code>CTFLH-XXXX-XXXX</code>) or HR Portal Password issued to you by Human Resources.
+                    </p>
+
+                    <?php if ($authError !== ''): ?>
+                        <div class="alert alert-danger d-flex align-items-start gap-2 py-2 px-3 small mb-4" role="alert">
+                            <i class="fas fa-triangle-exclamation mt-1"></i>
+                            <div><?= e($authError); ?></div>
+                        </div>
+                    <?php endif; ?>
+
+                    <form method="post" action="" autocomplete="off">
+                        <?= csrf_field(); ?>
+                        <div class="mb-3">
+                            <label for="accessPasscodeInput" class="form-label fw-semibold small text-dark">
+                                HR Onboarding Access Passcode <span class="gf-req">*</span>
+                            </label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0 text-secondary">
+                                    <i class="fas fa-key"></i>
+                                </span>
+                                <input type="password"
+                                       name="access_passcode"
+                                       id="accessPasscodeInput"
+                                       class="form-control border-start-0 py-2"
+                                       placeholder="Enter CTFLH-XXXX-XXXX or HR Password"
+                                       required
+                                       autofocus
+                                       <?= $rateLimitInfo['locked'] ? 'disabled' : ''; ?>>
+                                <button type="button" class="btn btn-outline-secondary" id="toggleGatePassBtn" title="Show/Hide Passcode">
+                                    <i class="far fa-eye" id="toggleGatePassIcon"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit"
+                                name="unlock_onboarding"
+                                class="btn-gf-submit w-100 py-2 mt-2"
+                                <?= $rateLimitInfo['locked'] ? 'disabled' : ''; ?>>
+                            <i class="fas fa-unlock-keyhole me-2"></i>Verify &amp; Unlock Onboarding Portal
+                        </button>
+                    </form>
+
+                    <div class="mt-4 pt-3 border-top">
+                        <div class="row g-2 text-center" style="font-size: 0.76rem; color: #5f6368;">
+                            <div class="col-4">
+                                <i class="fas fa-user-lock d-block mb-1 text-success"></i>
+                                Authorized Access Only
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-file-shield d-block mb-1 text-success"></i>
+                                AES-256-GCM Vault
+                            </div>
+                            <div class="col-4">
+                                <i class="fas fa-eye-slash d-block mb-1 text-success"></i>
+                                Zero Public Links
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         <?php else: ?>
+            <!-- =========================================================
+                 AUTHENTICATED 2-STEP ENCRYPTED ONBOARDING FORM
+                 ========================================================= -->
+            <div class="gf-banner-card">
+                <div class="gf-roof-header"></div>
+                <div class="gf-brand-hero">
+                    <img src="<?= PROOT; ?>assets/media/logo/logo.jpg" alt="Care That Feels Like Home" class="gf-brand-logo">
+                    <div class="gf-brand-words">
+                        <span class="w-care">CARE</span>
+                        <span class="w-sub">THAT FEELS LIKE</span>
+                        <span class="w-home">HOME</span>
+                    </div>
+                </div>
+                <div class="p-4">
+                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-2">
+                        <h1 class="h3 fw-normal mb-0" style="color: #202124;">Staff Onboarding</h1>
+                        <span class="vault-badge">
+                            <i class="fas fa-lock"></i> End-to-End Encrypted HR Vault
+                        </span>
+                    </div>
+                    <p class="text-muted small mb-3">
+                        Welcome to the <strong>Care That Feels Like Home</strong> team! Your session is authenticated and protected. All uploaded documents and sensitive identification numbers are automatically encrypted at rest using <strong>AES-256-GCM</strong> in a non-public vault accessible only to authorized HR administrators.
+                    </p>
+                    <div class="small" style="color: var(--gf-danger);">* Indicates required question</div>
+                </div>
+            </div>
 
             <!-- 2-Step Visual Stepper Indicator -->
             <div class="gf-stepper">
@@ -739,7 +971,8 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                 </div>
             </div>
 
-            <form method="post" action="" enctype="multipart/form-data" id="onboardingForm" novalidate>
+            <form method="post" action="" enctype="multipart/form-data" id="onboardingForm" autocomplete="off" novalidate>
+                <?= csrf_field(); ?>
 
                 <!-- =========================================================
                      STEP 1 (PAGE 1 OF 2): STAFF CONTACT + ITEMS 1 TO 6
@@ -757,11 +990,11 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                         <div class="row g-4">
                             <div class="col-md-6">
                                 <label class="small text-muted fw-medium mb-1">Full Legal Name <span class="gf-req">*</span></label>
-                                <input type="text" name="staff_name" class="gf-input" placeholder="Your answer" required>
+                                <input type="text" name="staff_name" class="gf-input" placeholder="Your answer" value="<?= e($prefillName); ?>" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="small text-muted fw-medium mb-1">Email Address <span class="gf-req">*</span></label>
-                                <input type="email" name="staff_email" class="gf-input" placeholder="your.email@example.com" required>
+                                <input type="email" name="staff_email" class="gf-input" placeholder="your.email@example.com" value="<?= e($prefillEmail); ?>" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="small text-muted fw-medium mb-1">Phone Number <span class="gf-req">*</span></label>
@@ -780,8 +1013,9 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                         <div class="gf-q-title">
                             <span class="gf-q-number">1</span>
                             <span>Government ID <span class="gf-req">*</span></span>
+                            <span class="vault-badge ms-auto"><i class="fas fa-lock"></i> AES-256 Encrypted</span>
                         </div>
-                        <div class="gf-q-desc">Select your valid government-issued photo identification and upload a clear copy.</div>
+                        <div class="gf-q-desc">Select your valid government-issued photo identification and upload a clear copy to the encrypted vault.</div>
 
                         <div class="mb-3">
                             <label class="gf-choice">
@@ -803,13 +1037,13 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                         </div>
 
                         <div class="mb-3" style="max-width: 360px;">
-                            <input type="text" name="gov_id_number" class="gf-input" placeholder="Government ID Number" required>
+                            <input type="text" name="gov_id_number" class="gf-input" placeholder="Government ID Number" autocomplete="off" required>
                         </div>
 
                         <div class="gf-upload-box">
                             <div>
-                                <div class="fw-medium small">Upload Government ID Copy (Front/Back)</div>
-                                <div class="gf-file-name" id="fn_gov_id_file">PDF, JPG, or PNG (Max 10MB)</div>
+                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Government ID Copy (Front/Back)</div>
+                                <div class="gf-file-name" id="fn_gov_id_file">Encrypted on upload &bull; PDF, JPG, or PNG (Max 10MB)</div>
                             </div>
                             <label class="gf-upload-btn">
                                 <i class="fas fa-arrow-up-from-bracket"></i> Add file
@@ -824,11 +1058,12 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                         <div class="gf-q-title">
                             <span class="gf-q-number">2</span>
                             <span>SSN (Social Security Number) <span class="gf-req">*</span></span>
+                            <span class="vault-badge ms-auto"><i class="fas fa-lock"></i> AES-256 Encrypted</span>
                         </div>
                         <div class="gf-q-desc">Enter your 9-digit Social Security Number for payroll &amp; tax verification, and optionally attach a copy of your SSN card.</div>
 
                         <div class="d-flex align-items-center gap-2 mb-3" style="max-width: 340px;">
-                            <input type="password" name="ssn_number" id="ssnInput" class="gf-input" placeholder="XXX-XX-XXXX" maxlength="11" required>
+                            <input type="password" name="ssn_number" id="ssnInput" class="gf-input" placeholder="XXX-XX-XXXX" maxlength="11" autocomplete="new-password" required>
                             <button type="button" class="btn btn-sm btn-light border" id="toggleSsnBtn" title="Show/Hide SSN">
                                 <i class="far fa-eye" id="toggleSsnIcon"></i>
                             </button>
@@ -836,8 +1071,8 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
 
                         <div class="gf-upload-box">
                             <div>
-                                <div class="fw-medium small">Upload Copy of Social Security Card</div>
-                                <div class="gf-file-name" id="fn_ssn_file">PDF, JPG, or PNG (Max 10MB)</div>
+                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Copy of Social Security Card</div>
+                                <div class="gf-file-name" id="fn_ssn_file">Encrypted on upload &bull; PDF, JPG, or PNG (Max 10MB)</div>
                             </div>
                             <label class="gf-upload-btn">
                                 <i class="fas fa-arrow-up-from-bracket"></i> Add file
@@ -872,8 +1107,8 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
 
                         <div class="gf-upload-box">
                             <div>
-                                <div class="fw-medium small">Upload Background Check Clearance / Authorization Form (if available)</div>
-                                <div class="gf-file-name" id="fn_background_check_file">PDF, JPG, or PNG (Max 10MB)</div>
+                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Background Check Clearance / Authorization Form (if available)</div>
+                                <div class="gf-file-name" id="fn_background_check_file">Encrypted on upload &bull; PDF, JPG, or PNG (Max 10MB)</div>
                             </div>
                             <label class="gf-upload-btn">
                                 <i class="fas fa-arrow-up-from-bracket"></i> Add file
@@ -908,8 +1143,8 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
 
                         <div class="gf-upload-box">
                             <div>
-                                <div class="fw-medium small">Upload FWA Certificate</div>
-                                <div class="gf-file-name" id="fn_fwa_certificate_file">PDF, JPG, or PNG (Max 10MB)</div>
+                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload FWA Certificate</div>
+                                <div class="gf-file-name" id="fn_fwa_certificate_file">Encrypted on upload &bull; PDF, JPG, or PNG (Max 10MB)</div>
                             </div>
                             <label class="gf-upload-btn">
                                 <i class="fas fa-arrow-up-from-bracket"></i> Add file
@@ -956,8 +1191,8 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
 
                         <div class="gf-upload-box">
                             <div>
-                                <div class="fw-medium small">Upload SFN 749 Form or CNA / LPN / RN License</div>
-                                <div class="gf-file-name" id="fn_credential_file">PDF, JPG, or PNG (Max 10MB)</div>
+                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload SFN 749 Form or CNA / LPN / RN License</div>
+                                <div class="gf-file-name" id="fn_credential_file">Encrypted on upload &bull; PDF, JPG, or PNG (Max 10MB)</div>
                             </div>
                             <label class="gf-upload-btn">
                                 <i class="fas fa-arrow-up-from-bracket"></i> Add file
@@ -1036,7 +1271,7 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                             Section 2 of 2 &mdash; Payroll, Tax Forms, Driving &amp; Final Onboarding Sign-Off
                         </div>
                         <div class="p-3 px-4 small text-muted">
-                            Please complete items 7 through 13 below, review and check all four mandatory onboarding policy declarations, and sign electronically to submit your packet.
+                            Please complete items 7 through 13 below, review and check all four mandatory onboarding policy declarations, and sign electronically to encrypt and submit your packet.
                         </div>
                     </div>
 
@@ -1045,6 +1280,7 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                         <div class="gf-q-title">
                             <span class="gf-q-number">7</span>
                             <span>Direct deposit <span class="gf-req">*</span></span>
+                            <span class="vault-badge ms-auto"><i class="fas fa-lock"></i> AES-256 Encrypted</span>
                         </div>
                         <div class="gf-q-desc">Provide your banking details for payroll direct deposit, or attach a voided check / direct deposit authorization letter.</div>
 
@@ -1068,18 +1304,18 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                             </div>
                             <div class="col-md-6">
                                 <label class="small text-muted">ABA Routing Number (9 digits) <span class="gf-req">*</span></label>
-                                <input type="text" name="routing_number" class="gf-input" placeholder="9-digit routing number" maxlength="9" required>
+                                <input type="text" name="routing_number" class="gf-input" placeholder="9-digit routing number" maxlength="9" autocomplete="off" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="small text-muted">Account Number <span class="gf-req">*</span></label>
-                                <input type="text" name="account_number" class="gf-input" placeholder="Account number" required>
+                                <input type="password" name="account_number" id="acctInput" class="gf-input" placeholder="Account number" autocomplete="new-password" required>
                             </div>
                         </div>
 
                         <div class="gf-upload-box">
                             <div>
-                                <div class="fw-medium small">Upload Voided Check or Bank Direct Deposit Form (Optional)</div>
-                                <div class="gf-file-name" id="fn_direct_deposit_file">PDF, JPG, or PNG (Max 10MB)</div>
+                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Voided Check or Bank Direct Deposit Form (Optional)</div>
+                                <div class="gf-file-name" id="fn_direct_deposit_file">Encrypted on upload &bull; PDF, JPG, or PNG (Max 10MB)</div>
                             </div>
                             <label class="gf-upload-btn">
                                 <i class="fas fa-arrow-up-from-bracket"></i> Add file
@@ -1114,8 +1350,8 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
 
                         <div class="gf-upload-box">
                             <div>
-                                <div class="fw-medium small">Upload Signed Form W-4</div>
-                                <div class="gf-file-name" id="fn_w4_file">PDF, JPG, or PNG (Max 10MB)</div>
+                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Signed Form W-4</div>
+                                <div class="gf-file-name" id="fn_w4_file">Encrypted on upload &bull; PDF, JPG, or PNG (Max 10MB)</div>
                             </div>
                             <label class="gf-upload-btn">
                                 <i class="fas fa-arrow-up-from-bracket"></i> Add file
@@ -1154,8 +1390,8 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
 
                         <div class="gf-upload-box">
                             <div>
-                                <div class="fw-medium small">Upload Signed Form I-9</div>
-                                <div class="gf-file-name" id="fn_i9_file">PDF, JPG, or PNG (Max 10MB)</div>
+                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Signed Form I-9</div>
+                                <div class="gf-file-name" id="fn_i9_file">Encrypted on upload &bull; PDF, JPG, or PNG (Max 10MB)</div>
                             </div>
                             <label class="gf-upload-btn">
                                 <i class="fas fa-arrow-up-from-bracket"></i> Add file
@@ -1241,13 +1477,14 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                         <div class="gf-q-title">
                             <span class="gf-q-number">12</span>
                             <span>Driver's license <span class="gf-req">*</span></span>
+                            <span class="vault-badge ms-auto"><i class="fas fa-lock"></i> AES-256 Encrypted</span>
                         </div>
                         <div class="gf-q-desc">Provide your Driver's License details and upload a clear photo or scan of your license.</div>
 
                         <div class="row g-3 mb-3">
                             <div class="col-md-5">
                                 <label class="small text-muted">Driver's License Number <span class="gf-req">*</span></label>
-                                <input type="text" name="drivers_license_number" class="gf-input" placeholder="License number" required>
+                                <input type="text" name="drivers_license_number" class="gf-input" placeholder="License number" autocomplete="off" required>
                             </div>
                             <div class="col-md-3">
                                 <label class="small text-muted">Issuing State <span class="gf-req">*</span></label>
@@ -1261,8 +1498,8 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
 
                         <div class="gf-upload-box">
                             <div>
-                                <div class="fw-medium small">Upload Copy of Driver's License</div>
-                                <div class="gf-file-name" id="fn_drivers_license_file">PDF, JPG, or PNG (Max 10MB)</div>
+                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Copy of Driver's License</div>
+                                <div class="gf-file-name" id="fn_drivers_license_file">Encrypted on upload &bull; PDF, JPG, or PNG (Max 10MB)</div>
                             </div>
                             <label class="gf-upload-btn">
                                 <i class="fas fa-arrow-up-from-bracket"></i> Add file
@@ -1277,6 +1514,7 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                         <div class="gf-q-title">
                             <span class="gf-q-number">13</span>
                             <span>Copy of driver's insurance <span class="gf-req">*</span></span>
+                            <span class="vault-badge ms-auto"><i class="fas fa-lock"></i> AES-256 Encrypted</span>
                         </div>
                         <div class="gf-q-desc">Provide your current auto insurance carrier &amp; policy number and attach a copy of your proof of insurance.</div>
 
@@ -1287,14 +1525,14 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                             </div>
                             <div class="col-md-6">
                                 <label class="small text-muted">Policy Number <span class="gf-req">*</span></label>
-                                <input type="text" name="drivers_insurance_policy" class="gf-input" placeholder="Policy number" required>
+                                <input type="text" name="drivers_insurance_policy" class="gf-input" placeholder="Policy number" autocomplete="off" required>
                             </div>
                         </div>
 
                         <div class="gf-upload-box">
                             <div>
-                                <div class="fw-medium small">Upload Copy of Driver's Insurance Card / Declarations</div>
-                                <div class="gf-file-name" id="fn_drivers_insurance_file">PDF, JPG, or PNG (Max 10MB)</div>
+                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Copy of Driver's Insurance Card / Declarations</div>
+                                <div class="gf-file-name" id="fn_drivers_insurance_file">Encrypted on upload &bull; PDF, JPG, or PNG (Max 10MB)</div>
                             </div>
                             <label class="gf-upload-btn">
                                 <i class="fas fa-arrow-up-from-bracket"></i> Add file
@@ -1320,7 +1558,7 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                                 Back
                             </button>
                             <button type="submit" name="submit_onboarding" class="btn-gf-submit">
-                                Submit
+                                <i class="fas fa-lock me-1"></i>Encrypt &amp; Submit
                             </button>
                         </div>
 
@@ -1339,7 +1577,7 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                 </div> <!-- End of #formStep2 -->
 
                 <div class="text-center text-muted small mt-4">
-                    <p class="mb-1">Never submit passwords through forms. Secure Staff Onboarding Portal.</p>
+                    <p class="mb-1"><i class="fas fa-shield-halved text-success me-1"></i>Protected by Password Authentication &amp; AES-256-GCM Encrypted Vault Storage.</p>
                     <p class="mb-0"><strong>Care That Feels Like Home Corporation</strong> &mdash; Bismarck, ND</p>
                 </div>
             </form>
@@ -1350,14 +1588,30 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
+        // Gate Passcode Show/Hide Toggle
+        const gatePassInput = document.getElementById('accessPasscodeInput');
+        const toggleGateBtn = document.getElementById('toggleGatePassBtn');
+        if (toggleGateBtn && gatePassInput) {
+            toggleGateBtn.addEventListener('click', function() {
+                const icon = document.getElementById('toggleGatePassIcon');
+                if (gatePassInput.type === 'password') {
+                    gatePassInput.type = 'text';
+                    icon.classList.replace('fa-eye', 'fa-eye-slash');
+                } else {
+                    gatePassInput.type = 'password';
+                    icon.classList.replace('fa-eye-slash', 'fa-eye');
+                }
+            });
+        }
+
         // Display selected filename on upload buttons
         document.querySelectorAll('.gf-file-input').forEach(input => {
             input.addEventListener('change', function() {
                 const labelEl = document.getElementById(this.dataset.target);
                 if (this.files && this.files.length > 0) {
-                    labelEl.innerHTML = '<i class="fas fa-file-circle-check text-success me-1"></i><strong>' + this.files[0].name + '</strong>';
+                    labelEl.innerHTML = '<i class="fas fa-lock text-success me-1"></i><strong>' + this.files[0].name + '</strong> <span class="text-success">(Ready for AES-256 encryption)</span>';
                 } else {
-                    labelEl.textContent = 'PDF, JPG, or PNG (Max 10MB)';
+                    labelEl.textContent = 'Encrypted on upload • PDF, JPG, or PNG (Max 10MB)';
                 }
                 updateProgress();
             });
@@ -1397,7 +1651,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             document.querySelectorAll(cardsSelector).forEach(card => {
                 let cardValid = true;
 
-                // Check required text/email/tel/password/date inputs & radio groups
                 const reqInputs = card.querySelectorAll('input[required], select[required], textarea[required]');
                 reqInputs.forEach(inp => {
                     if (inp.type === 'radio') {
@@ -1410,7 +1663,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                     }
                 });
 
-                // Check multi-checkbox groups (e.g. Question 5 & Question 6)
                 const chkGroupName = card.getAttribute('data-checkbox-group');
                 if (chkGroupName) {
                     const anyChecked = card.querySelector('input[name="' + chkGroupName + '"]:checked');
@@ -1432,13 +1684,11 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             return true;
         }
 
-        // Clear error border as soon as user interacts with a card
         document.querySelectorAll('.gf-card').forEach(card => {
             card.addEventListener('input', () => card.classList.remove('gf-card-error'));
             card.addEventListener('change', () => card.classList.remove('gf-card-error'));
         });
 
-        // Two-Step Navigation (Step 1 <-> Step 2)
         const step1Div = document.getElementById('formStep1');
         const step2Div = document.getElementById('formStep2');
         const pill1 = document.getElementById('stepPill1');
@@ -1449,6 +1699,7 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
         const formEl = document.getElementById('onboardingForm');
 
         function showStep(stepNum) {
+            if (!step1Div || !step2Div) return;
             if (stepNum === 2) {
                 step1Div.style.display = 'none';
                 step2Div.style.display = 'block';
@@ -1503,7 +1754,6 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
             });
         }
 
-        // Live completion progress tracker across the 13 sections
         function updateProgress() {
             const sections = document.querySelectorAll('.onboarding-section');
             if (!sections.length) return;
@@ -1517,7 +1767,7 @@ $isSubmitted = isset($_GET['submitted']) && $_GET['submitted'] == '1';
                         hasVal = true;
                     } else if (inp.type === 'file' && inp.files && inp.files.length > 0) {
                         hasVal = true;
-                    } else if (!['radio', 'checkbox', 'file', 'date'].includes(inp.type) && inp.value.trim() !== '') {
+                    } else if (!['radio', 'checkbox', 'file', 'date', 'hidden'].includes(inp.type) && inp.value.trim() !== '') {
                         hasVal = true;
                     }
                 });

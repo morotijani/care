@@ -1,9 +1,8 @@
 <?php
-    
-    // AUTO LOAD VENDOR FILES
-    require dirname(__DIR__)  . '/care/vendor/autoload.php';
 
-    
+    // AUTO LOAD VENDOR FILES
+    require __DIR__ . '/vendor/autoload.php';
+
     // LOAD DOTENV
     $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-    $dotenv->load();
+    $dotenv->safeLoad();

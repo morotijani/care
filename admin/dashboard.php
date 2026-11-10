@@ -171,22 +171,22 @@
 <div class="card-modern p-3 px-4 mb-4 d-flex flex-wrap justify-content-between align-items-center gap-3" style="border-left: 4px solid #0d9488;">
     <div class="d-flex align-items-center gap-3">
         <div class="stat-icon" style="width: 42px; height: 42px; background: #ccfbf1; color: #0f766e;">
-            <i class="fas fa-clipboard-check"></i>
+            <i class="fas fa-shield-halved"></i>
         </div>
         <div>
-            <h6 class="fw-bold mb-0">Staff Onboarding Portal (13-Point Packet)</h6>
+            <h6 class="fw-bold mb-0">Encrypted Staff Onboarding Vault (13-Point Packet)</h6>
             <div class="text-muted small">
-                <strong><?= number_format($onboardingCount); ?></strong> total submissions &bull;
-                <strong class="text-warning-emphasis"><?= number_format($pendingOnboarding); ?></strong> awaiting HR verification
+                <strong><?= number_format($onboardingCount); ?></strong> encrypted submissions &bull;
+                <strong class="text-warning-emphasis"><?= number_format($pendingOnboarding); ?></strong> awaiting HR verification &bull; AES-256-GCM Protected
             </div>
         </div>
     </div>
     <div class="d-flex flex-wrap gap-2">
         <a href="<?= PROOT; ?>onboarding" target="_blank" class="btn btn-sm btn-light border fw-semibold">
-            <i class="fas fa-external-link-alt me-1 text-secondary"></i>Public Onboarding Form
+            <i class="fas fa-lock me-1 text-success"></i>View Portal Gate
         </a>
         <a href="<?= PROOT; ?>admin/onboarding" class="btn btn-sm btn-teal">
-            Manage Onboarding <i class="fas fa-arrow-right ms-1"></i>
+            Manage Vault &amp; Invites <i class="fas fa-arrow-right ms-1"></i>
         </a>
     </div>
 </div>

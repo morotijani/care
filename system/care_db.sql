@@ -215,9 +215,9 @@ CREATE TABLE IF NOT EXISTS `care_staff_onboarding` (
   `staff_phone` varchar(30) NOT NULL,
   `staff_address` varchar(255) DEFAULT NULL,
   `gov_id_type` varchar(80) DEFAULT NULL,
-  `gov_id_number` varchar(80) DEFAULT NULL,
+  `gov_id_number` varchar(512) DEFAULT NULL,
   `gov_id_file` varchar(255) DEFAULT NULL,
-  `ssn_number` varchar(30) DEFAULT NULL,
+  `ssn_number` varchar(512) DEFAULT NULL,
   `ssn_file` varchar(255) DEFAULT NULL,
   `background_check_status` varchar(80) DEFAULT NULL,
   `background_check_file` varchar(255) DEFAULT NULL,
@@ -230,8 +230,8 @@ CREATE TABLE IF NOT EXISTS `care_staff_onboarding` (
   `chore_labor_notes` text DEFAULT NULL,
   `bank_name` varchar(120) DEFAULT NULL,
   `account_type` varchar(50) DEFAULT NULL,
-  `routing_number` varchar(50) DEFAULT NULL,
-  `account_number` varchar(50) DEFAULT NULL,
+  `routing_number` varchar(512) DEFAULT NULL,
+  `account_number` varchar(512) DEFAULT NULL,
   `direct_deposit_file` varchar(255) DEFAULT NULL,
   `w4_filing_status` varchar(100) DEFAULT NULL,
   `w4_file` varchar(255) DEFAULT NULL,
@@ -245,12 +245,12 @@ CREATE TABLE IF NOT EXISTS `care_staff_onboarding` (
   `reporting_agreed` tinyint(1) NOT NULL DEFAULT 0,
   `digital_signature` varchar(120) DEFAULT NULL,
   `signature_date` date DEFAULT NULL,
-  `drivers_license_number` varchar(80) DEFAULT NULL,
+  `drivers_license_number` varchar(512) DEFAULT NULL,
   `drivers_license_state` varchar(50) DEFAULT NULL,
   `drivers_license_expiry` date DEFAULT NULL,
   `drivers_license_file` varchar(255) DEFAULT NULL,
   `drivers_insurance_provider` varchar(120) DEFAULT NULL,
-  `drivers_insurance_policy` varchar(100) DEFAULT NULL,
+  `drivers_insurance_policy` varchar(512) DEFAULT NULL,
   `drivers_insurance_file` varchar(255) DEFAULT NULL,
   `additional_notes` text DEFAULT NULL,
   `admin_notes` text DEFAULT NULL,
@@ -261,6 +261,62 @@ CREATE TABLE IF NOT EXISTS `care_staff_onboarding` (
   UNIQUE KEY `idx_onboarding_id` (`onboarding_id`),
   KEY `idx_onboarding_status` (`onboarding_status`),
   KEY `idx_staff_email` (`staff_email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `care_onboarding_settings`
+--
+
+CREATE TABLE IF NOT EXISTS `care_onboarding_settings` (
+  `setting_key` varchar(64) NOT NULL,
+  `setting_value` text DEFAULT NULL,
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  PRIMARY KEY (`setting_key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `care_onboarding_invites`
+--
+
+CREATE TABLE IF NOT EXISTS `care_onboarding_invites` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `invite_id` varchar(100) NOT NULL,
+  `staff_name` varchar(120) DEFAULT NULL,
+  `staff_email` varchar(120) DEFAULT NULL,
+  `code_prefix` varchar(20) NOT NULL,
+  `code_hint` varchar(30) NOT NULL,
+  `code_hash` varchar(255) NOT NULL,
+  `max_uses` int(11) NOT NULL DEFAULT 1,
+  `used_count` int(11) NOT NULL DEFAULT 0,
+  `expires_at` datetime NOT NULL,
+  `is_revoked` tinyint(1) NOT NULL DEFAULT 0,
+  `created_by` varchar(100) DEFAULT NULL,
+  `last_used_at` datetime DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idx_ob_invite_id` (`invite_id`),
+  KEY `idx_ob_code_prefix` (`code_prefix`),
+  KEY `idx_ob_expires` (`expires_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `care_onboarding_attempts`
+--
+
+CREATE TABLE IF NOT EXISTS `care_onboarding_attempts` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `ip_address` varchar(64) NOT NULL,
+  `event_type` varchar(40) NOT NULL,
+  `details` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  PRIMARY KEY (`id`),
+  KEY `idx_ob_attempt_lookup` (`ip_address`, `event_type`, `created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 COMMIT;
