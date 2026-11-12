@@ -81,16 +81,20 @@ $field    = trim($_GET['field'] ?? '');
 $download = isset($_GET['download']) && $_GET['download'] === '1';
 
 $allowedFileFields = [
-    'gov_id_file'            => 'GovID',
-    'ssn_file'               => 'SSN_Card',
-    'background_check_file'  => 'Background_Check',
-    'fwa_certificate_file'   => 'FWA_Certificate',
-    'credential_file'        => 'Credential_License',
-    'direct_deposit_file'    => 'Direct_Deposit',
-    'w4_file'                => 'W4_Form',
-    'i9_file'                => 'I9_Form',
-    'drivers_license_file'   => 'Drivers_License',
-    'drivers_insurance_file' => 'Drivers_Insurance',
+    'gov_id_file'             => 'GovID',
+    'ssn_file'                => 'SSN_Card',
+    'background_check_file'   => 'Background_Check',
+    'fwa_certificate_file'    => 'FWA_Certificate',
+    'credential_file'         => 'Credential_License',
+    'direct_deposit_file'     => 'Direct_Deposit',
+    'w4_file'                 => 'W4_Form',
+    'i9_file'                 => 'I9_Form',
+    'policy_declaration_file' => '11a_Policy_Declaration',
+    'compliance_file'         => '11b_Compliance',
+    'policy_procedures_file'  => '11c_Policy_And_Procedures',
+    'reporting_file'          => '11d_Reporting',
+    'drivers_license_file'    => 'Drivers_License',
+    'drivers_insurance_file'  => 'Drivers_Insurance',
 ];
 
 if ($id <= 0 || !isset($allowedFileFields[$field])) {

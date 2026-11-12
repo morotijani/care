@@ -34,6 +34,34 @@ if (!empty($_SESSION['ONBOARDING_AUTH_VERIFIED'])) {
     $_SESSION['ONBOARDING_AUTH_AT'] = time();
 }
 
+// 0. Stream Official Blank Onboarding PDF Documents (W-4, I-9, Policy Declaration, Compliance, Policy & Procedures, Reporting)
+if (isset($_GET['download_template'])) {
+    if (empty($_SESSION['ONBOARDING_AUTH_VERIFIED']) && !admin_is_logged_in()) {
+        http_response_code(403);
+        exit('403 Forbidden — Please unlock the Staff Onboarding Portal first.');
+    }
+    $tplKey  = trim((string)$_GET['download_template']);
+    $tplInfo = care_resolve_onboarding_template($tplKey);
+    if (!$tplInfo) {
+        http_response_code(404);
+        exit('404 Not Found — Onboarding template document not found.');
+    }
+
+    $isPreview = isset($_GET['preview']) && $_GET['preview'] === '1';
+    $disp      = $isPreview ? 'inline' : 'attachment';
+    $fileSize  = (int)filesize($tplInfo['path']);
+
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
+    header('Content-Type: application/pdf');
+    header('Content-Disposition: ' . $disp . '; filename="' . $tplInfo['download_name'] . '"');
+    header('Content-Length: ' . $fileSize);
+    header('X-Content-Type-Options: nosniff');
+    readfile($tplInfo['path']);
+    exit;
+}
+
 $rateLimitInfo = care_is_onboarding_rate_limited($dbConnection);
 $authError = '';
 
@@ -146,13 +174,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_onboarding']))
     $therap_status   = trim($_POST['therap_status'] ?? '');
     $therap_username = trim($_POST['therap_username'] ?? '');
 
-    // 11. Sign final Onboarding for new staff
-    $policy_declaration       = !empty($_POST['policy_declaration']) ? 1 : 0;
-    $compliance_agreed        = !empty($_POST['compliance_agreed']) ? 1 : 0;
-    $policy_procedures_agreed = !empty($_POST['policy_procedures_agreed']) ? 1 : 0;
-    $reporting_agreed         = !empty($_POST['reporting_agreed']) ? 1 : 0;
-    $digital_signature        = trim($_POST['digital_signature'] ?? '');
-    $signature_date           = !empty($_POST['signature_date']) ? $_POST['signature_date'] : date('Y-m-d');
+    // 11. Sign final Onboarding for new staff (4 signed documents + electronic signature)
+    $digital_signature = trim($_POST['digital_signature'] ?? '');
+    $signature_date    = !empty($_POST['signature_date']) ? $_POST['signature_date'] : date('Y-m-d');
 
     // 12. Driver's license
     $drivers_license_number = trim($_POST['drivers_license_number'] ?? '');
@@ -165,11 +189,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_onboarding']))
 
     $additional_notes = trim($_POST['additional_notes'] ?? '');
 
+    // Check required document uploads for W-4 (8), I-9 (9), and the 4 Final Onboarding Documents (11)
+    $mandatoryUploadLabels = [
+        'w4_file'                 => 'Signed Form W-4 (Item 8)',
+        'i9_file'                 => 'Signed Form I-9 (Item 9)',
+        'policy_declaration_file' => 'Policy Declaration Document (Item 11)',
+        'compliance_file'         => 'Compliance Document (Item 11)',
+        'policy_procedures_file'  => 'Policy and Procedures Document (Item 11)',
+        'reporting_file'          => 'Reporting Document (Item 11)',
+    ];
+    $missingMandatoryDocs = [];
+    foreach ($mandatoryUploadLabels as $mKey => $mLabel) {
+        if (!isset($_FILES[$mKey]) || $_FILES[$mKey]['error'] === UPLOAD_ERR_NO_FILE) {
+            $missingMandatoryDocs[] = $mLabel;
+        }
+    }
+
     if (empty($staff_name) || empty($staff_email) || empty($staff_phone)) {
         $_SESSION['flash_error'] = "Please fill in your required contact details (Name, Email, Phone).";
         redirect(PROOT . "onboarding");
-    } elseif (!$policy_declaration || !$compliance_agreed || !$policy_procedures_agreed || !$reporting_agreed || empty($digital_signature)) {
-        $_SESSION['flash_error'] = "Please acknowledge all four Final Onboarding policy declarations and provide your digital signature.";
+    } elseif (!empty($missingMandatoryDocs)) {
+        $_SESSION['flash_error'] = "Please download, fill out, and upload all required onboarding documents before submitting: " . implode(', ', $missingMandatoryDocs) . ".";
+        redirect(PROOT . "onboarding");
+    } elseif (empty($digital_signature)) {
+        $_SESSION['flash_error'] = "Please provide your full legal name as your electronic signature in Section 11.";
         redirect(PROOT . "onboarding");
     } else {
         $fileFields = [
@@ -181,6 +224,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_onboarding']))
             'direct_deposit_file',
             'w4_file',
             'i9_file',
+            'policy_declaration_file',
+            'compliance_file',
+            'policy_procedures_file',
+            'reporting_file',
             'drivers_license_file',
             'drivers_insurance_file'
         ];
@@ -200,6 +247,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_onboarding']))
             }
             $uploadedPaths[$ff] = $res;
         }
+
+        // All 4 Section 11 documents are verified & uploaded
+        $policy_declaration       = !empty($uploadedPaths['policy_declaration_file']) ? 1 : 0;
+        $compliance_agreed        = !empty($uploadedPaths['compliance_file']) ? 1 : 0;
+        $policy_procedures_agreed = !empty($uploadedPaths['policy_procedures_file']) ? 1 : 0;
+        $reporting_agreed         = !empty($uploadedPaths['reporting_file']) ? 1 : 0;
 
         try {
             // Encrypt all sensitive PII fields at rest with AES-256-GCM before SQL INSERT
@@ -223,7 +276,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_onboarding']))
                     w4_filing_status, w4_file,
                     i9_work_status, i9_file,
                     therap_status, therap_username,
-                    policy_declaration, compliance_agreed, policy_procedures_agreed, reporting_agreed,
+                    policy_declaration, policy_declaration_file,
+                    compliance_agreed, compliance_file,
+                    policy_procedures_agreed, policy_procedures_file,
+                    reporting_agreed, reporting_file,
                     digital_signature, signature_date,
                     drivers_license_number, drivers_license_state, drivers_license_expiry, drivers_license_file,
                     drivers_insurance_provider, drivers_insurance_policy, drivers_insurance_file,
@@ -240,7 +296,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_onboarding']))
                     ?, ?,
                     ?, ?,
                     ?, ?,
-                    ?, ?, ?, ?,
+                    ?, ?,
+                    ?, ?,
+                    ?, ?,
+                    ?, ?,
                     ?, ?,
                     ?, ?, ?, ?,
                     ?, ?, ?,
@@ -260,7 +319,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_onboarding']))
                 $w4_filing_status ?: null, $uploadedPaths['w4_file'],
                 $i9_work_status ?: null, $uploadedPaths['i9_file'],
                 $therap_status ?: null, $therap_username ?: null,
-                $policy_declaration, $compliance_agreed, $policy_procedures_agreed, $reporting_agreed,
+                $policy_declaration, $uploadedPaths['policy_declaration_file'],
+                $compliance_agreed, $uploadedPaths['compliance_file'],
+                $policy_procedures_agreed, $uploadedPaths['policy_procedures_file'],
+                $reporting_agreed, $uploadedPaths['reporting_file'],
                 $digital_signature, $signature_date,
                 $encLicenseNumber, $drivers_license_state ?: null, $drivers_license_expiry, $uploadedPaths['drivers_license_file'],
                 $drivers_insurance_provider ?: null, $encInsurancePolicy, $uploadedPaths['drivers_insurance_file'],
@@ -1330,8 +1392,28 @@ $prefillEmail = $_SESSION['ONBOARDING_PREFILL_EMAIL'] ?? '';
                         <div class="gf-q-title">
                             <span class="gf-q-number">8</span>
                             <span>W-4 Form (Employee's Withholding Certificate) <span class="gf-req">*</span></span>
+                            <span class="vault-badge ms-auto"><i class="fas fa-lock"></i> AES-256 Encrypted</span>
                         </div>
-                        <div class="gf-q-desc">Select your federal tax withholding filing status and attach your completed IRS Form W-4.</div>
+                        <div class="gf-q-desc">Download the official Form W-4 below, fill it out and sign it, select your federal tax withholding status, and upload your completed Form W-4.</div>
+
+                        <!-- Step 1: Download Blank W-4 PDF -->
+                        <div class="p-3 rounded-3 mb-3 d-flex flex-wrap align-items-center justify-content-between gap-2" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fas fa-file-pdf text-danger fs-4"></i>
+                                <div>
+                                    <div class="fw-semibold small text-dark">W-4 . Employee’s Withholding Certificate.pdf</div>
+                                    <div class="text-muted" style="font-size: 0.78rem;">Step 1: Download, read, and complete this form</div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="<?= PROOT; ?>onboarding?download_template=w4&amp;preview=1" target="_blank" rel="noopener" class="btn btn-sm btn-light border fw-medium">
+                                    <i class="far fa-eye me-1 text-secondary"></i>Read PDF
+                                </a>
+                                <a href="<?= PROOT; ?>onboarding?download_template=w4" class="btn btn-sm btn-success fw-medium">
+                                    <i class="fas fa-download me-1"></i>Download W-4 PDF
+                                </a>
+                            </div>
+                        </div>
 
                         <div class="mb-3">
                             <label class="gf-choice">
@@ -1350,15 +1432,15 @@ $prefillEmail = $_SESSION['ONBOARDING_PREFILL_EMAIL'] ?? '';
 
                         <div class="gf-upload-box">
                             <div>
-                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Signed Form W-4</div>
-                                <div class="gf-file-name" id="fn_w4_file">Encrypted on upload &bull; PDF, JPG, or PNG (Max 10MB)</div>
+                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Step 2: Upload Completed &amp; Signed Form W-4 <span class="gf-req">*</span></div>
+                                <div class="gf-file-name" id="fn_w4_file">Required &bull; Encrypted on upload (PDF, JPG, PNG, DOC, DOCX)</div>
                             </div>
                             <label class="gf-upload-btn">
-                                <i class="fas fa-arrow-up-from-bracket"></i> Add file
-                                <input type="file" name="w4_file" class="d-none gf-file-input" data-target="fn_w4_file" accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx">
+                                <i class="fas fa-arrow-up-from-bracket"></i> Upload W-4
+                                <input type="file" name="w4_file" class="d-none gf-file-input" data-target="fn_w4_file" accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" required>
                             </label>
                         </div>
-                        <div class="gf-error-msg"><i class="fas fa-circle-exclamation"></i> Please select your W-4 filing status.</div>
+                        <div class="gf-error-msg"><i class="fas fa-circle-exclamation"></i> Please select your W-4 filing status and upload your completed Form W-4.</div>
                     </div>
 
                     <!-- 9. I-9 form -->
@@ -1366,8 +1448,28 @@ $prefillEmail = $_SESSION['ONBOARDING_PREFILL_EMAIL'] ?? '';
                         <div class="gf-q-title">
                             <span class="gf-q-number">9</span>
                             <span>I-9 Form (Employment Eligibility Verification) <span class="gf-req">*</span></span>
+                            <span class="vault-badge ms-auto"><i class="fas fa-lock"></i> AES-256 Encrypted</span>
                         </div>
-                        <div class="gf-q-desc">Attest to your employment authorization status under USCIS Form I-9 and upload your signed I-9 form.</div>
+                        <div class="gf-q-desc">Download the official Form I-9 below, fill it out and sign it, attest to your employment authorization status, and upload your completed Form I-9.</div>
+
+                        <!-- Step 1: Download Blank I-9 PDF -->
+                        <div class="p-3 rounded-3 mb-3 d-flex flex-wrap align-items-center justify-content-between gap-2" style="background: #f0fdf4; border: 1px solid #bbf7d0;">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="fas fa-file-pdf text-danger fs-4"></i>
+                                <div>
+                                    <div class="fw-semibold small text-dark">Form I-9, Employment Eligibility Verification.pdf</div>
+                                    <div class="text-muted" style="font-size: 0.78rem;">Step 1: Download, read, and complete this form</div>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <a href="<?= PROOT; ?>onboarding?download_template=i9&amp;preview=1" target="_blank" rel="noopener" class="btn btn-sm btn-light border fw-medium">
+                                    <i class="far fa-eye me-1 text-secondary"></i>Read PDF
+                                </a>
+                                <a href="<?= PROOT; ?>onboarding?download_template=i9" class="btn btn-sm btn-success fw-medium">
+                                    <i class="fas fa-download me-1"></i>Download I-9 PDF
+                                </a>
+                            </div>
+                        </div>
 
                         <div class="mb-3">
                             <label class="gf-choice">
@@ -1390,15 +1492,15 @@ $prefillEmail = $_SESSION['ONBOARDING_PREFILL_EMAIL'] ?? '';
 
                         <div class="gf-upload-box">
                             <div>
-                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Signed Form I-9</div>
-                                <div class="gf-file-name" id="fn_i9_file">Encrypted on upload &bull; PDF, JPG, or PNG (Max 10MB)</div>
+                                <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Step 2: Upload Completed &amp; Signed Form I-9 <span class="gf-req">*</span></div>
+                                <div class="gf-file-name" id="fn_i9_file">Required &bull; Encrypted on upload (PDF, JPG, PNG, DOC, DOCX)</div>
                             </div>
                             <label class="gf-upload-btn">
-                                <i class="fas fa-arrow-up-from-bracket"></i> Add file
-                                <input type="file" name="i9_file" class="d-none gf-file-input" data-target="fn_i9_file" accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx">
+                                <i class="fas fa-arrow-up-from-bracket"></i> Upload I-9
+                                <input type="file" name="i9_file" class="d-none gf-file-input" data-target="fn_i9_file" accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" required>
                             </label>
                         </div>
-                        <div class="gf-error-msg"><i class="fas fa-circle-exclamation"></i> Please select your I-9 work eligibility status.</div>
+                        <div class="gf-error-msg"><i class="fas fa-circle-exclamation"></i> Please select your I-9 work eligibility status and upload your completed Form I-9.</div>
                     </div>
 
                     <!-- 10. Therap account -->
@@ -1430,33 +1532,143 @@ $prefillEmail = $_SESSION['ONBOARDING_PREFILL_EMAIL'] ?? '';
                         <div class="gf-error-msg"><i class="fas fa-circle-exclamation"></i> Please select your Therap account status.</div>
                     </div>
 
-                    <!-- 11. Sign final Onboarding for new staff -->
+                    <!-- 11. Sign final Onboarding for new staff (4 Document Downloads & Required Uploads) -->
                     <div class="gf-card onboarding-section step2-card" data-section="11">
                         <div class="gf-q-title">
                             <span class="gf-q-number">11</span>
                             <span>Sign final Onboarding for new staff <span class="gf-req">*</span></span>
+                            <span class="vault-badge ms-auto"><i class="fas fa-lock"></i> AES-256 Encrypted</span>
                         </div>
                         <div class="gf-q-desc">
-                            Please review and check all four mandatory onboarding acknowledgments below, then type your full legal name as your binding electronic signature.
+                            Please <strong>download, read, and fill/sign</strong> all four mandatory onboarding documents below, then <strong>upload each completed document</strong> and provide your binding electronic signature before submitting.
                         </div>
 
+                        <!-- 11a. Policy Declaration -->
                         <div class="p-3 rounded-3 mb-3" style="background: #f8faf9; border: 1px solid #d4e8e1;">
-                            <label class="gf-choice">
-                                <input type="checkbox" name="policy_declaration" value="1" required>
-                                <span><strong>Policy declaration</strong> — I have read, understood, and agree to abide by the Care That Feels Like Home Policy Declaration. <span class="gf-req">*</span></span>
-                            </label>
-                            <label class="gf-choice">
-                                <input type="checkbox" name="compliance_agreed" value="1" required>
-                                <span><strong>Compliance</strong> — I acknowledge and commit to upholding all state, federal, HIPAA, and organizational compliance requirements. <span class="gf-req">*</span></span>
-                            </label>
-                            <label class="gf-choice">
-                                <input type="checkbox" name="policy_procedures_agreed" value="1" required>
-                                <span><strong>Policy and procedures</strong> — I have reviewed and agree to follow all operational Policies and Procedures for client care and workplace safety. <span class="gf-req">*</span></span>
-                            </label>
-                            <label class="gf-choice">
-                                <input type="checkbox" name="reporting_agreed" value="1" required>
-                                <span><strong>Reporting</strong> — I understand my mandatory reporting duties for incidents, abuse/neglect prevention, and shift documentation. <span class="gf-req">*</span></span>
-                            </label>
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                                <div>
+                                    <div class="fw-bold small text-dark">
+                                        1. Policy declaration <span class="gf-req">*</span>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 0.82rem;">
+                                        Read, complete, and sign <em>Policy Declaration - Care That Feels Like Home.pdf</em>, then upload your completed copy.
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a href="<?= PROOT; ?>onboarding?download_template=policy_declaration&amp;preview=1" target="_blank" rel="noopener" class="btn btn-sm btn-light border fw-medium">
+                                        <i class="far fa-eye me-1 text-secondary"></i>Read PDF
+                                    </a>
+                                    <a href="<?= PROOT; ?>onboarding?download_template=policy_declaration" class="btn btn-sm btn-outline-success fw-medium">
+                                        <i class="fas fa-download me-1"></i>Download PDF
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="gf-upload-box mt-2 bg-white">
+                                <div>
+                                    <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Signed Policy Declaration <span class="gf-req">*</span></div>
+                                    <div class="gf-file-name" id="fn_policy_declaration_file">Required &bull; Encrypted on upload (Max 10MB)</div>
+                                </div>
+                                <label class="gf-upload-btn">
+                                    <i class="fas fa-arrow-up-from-bracket"></i> Upload Completed File
+                                    <input type="file" name="policy_declaration_file" class="d-none gf-file-input" data-target="fn_policy_declaration_file" accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" required>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 11b. Compliance -->
+                        <div class="p-3 rounded-3 mb-3" style="background: #f8faf9; border: 1px solid #d4e8e1;">
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                                <div>
+                                    <div class="fw-bold small text-dark">
+                                        2. Compliance <span class="gf-req">*</span>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 0.82rem;">
+                                        Read, complete, and sign <em>Compliance - Care That Feels Like Home.pdf</em>, then upload your completed copy.
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a href="<?= PROOT; ?>onboarding?download_template=compliance&amp;preview=1" target="_blank" rel="noopener" class="btn btn-sm btn-light border fw-medium">
+                                        <i class="far fa-eye me-1 text-secondary"></i>Read PDF
+                                    </a>
+                                    <a href="<?= PROOT; ?>onboarding?download_template=compliance" class="btn btn-sm btn-outline-success fw-medium">
+                                        <i class="fas fa-download me-1"></i>Download PDF
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="gf-upload-box mt-2 bg-white">
+                                <div>
+                                    <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Signed Compliance Document <span class="gf-req">*</span></div>
+                                    <div class="gf-file-name" id="fn_compliance_file">Required &bull; Encrypted on upload (Max 10MB)</div>
+                                </div>
+                                <label class="gf-upload-btn">
+                                    <i class="fas fa-arrow-up-from-bracket"></i> Upload Completed File
+                                    <input type="file" name="compliance_file" class="d-none gf-file-input" data-target="fn_compliance_file" accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" required>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 11c. Policy and procedures -->
+                        <div class="p-3 rounded-3 mb-3" style="background: #f8faf9; border: 1px solid #d4e8e1;">
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                                <div>
+                                    <div class="fw-bold small text-dark">
+                                        3. Policy and procedures <span class="gf-req">*</span>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 0.82rem;">
+                                        Read, complete, and sign <em>Policy and Procedures - Care That Feels Like Home.pdf</em>, then upload your completed copy.
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a href="<?= PROOT; ?>onboarding?download_template=policy_procedures&amp;preview=1" target="_blank" rel="noopener" class="btn btn-sm btn-light border fw-medium">
+                                        <i class="far fa-eye me-1 text-secondary"></i>Read PDF
+                                    </a>
+                                    <a href="<?= PROOT; ?>onboarding?download_template=policy_procedures" class="btn btn-sm btn-outline-success fw-medium">
+                                        <i class="fas fa-download me-1"></i>Download PDF
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="gf-upload-box mt-2 bg-white">
+                                <div>
+                                    <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Signed Policy &amp; Procedures <span class="gf-req">*</span></div>
+                                    <div class="gf-file-name" id="fn_policy_procedures_file">Required &bull; Encrypted on upload (Max 10MB)</div>
+                                </div>
+                                <label class="gf-upload-btn">
+                                    <i class="fas fa-arrow-up-from-bracket"></i> Upload Completed File
+                                    <input type="file" name="policy_procedures_file" class="d-none gf-file-input" data-target="fn_policy_procedures_file" accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" required>
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- 11d. Reporting -->
+                        <div class="p-3 rounded-3 mb-3" style="background: #f8faf9; border: 1px solid #d4e8e1;">
+                            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2 mb-2">
+                                <div>
+                                    <div class="fw-bold small text-dark">
+                                        4. Reporting <span class="gf-req">*</span>
+                                    </div>
+                                    <div class="text-muted" style="font-size: 0.82rem;">
+                                        Read, complete, and sign <em>Report - Care That Feels Like Home.pdf</em>, then upload your completed copy.
+                                    </div>
+                                </div>
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a href="<?= PROOT; ?>onboarding?download_template=reporting&amp;preview=1" target="_blank" rel="noopener" class="btn btn-sm btn-light border fw-medium">
+                                        <i class="far fa-eye me-1 text-secondary"></i>Read PDF
+                                    </a>
+                                    <a href="<?= PROOT; ?>onboarding?download_template=reporting" class="btn btn-sm btn-outline-success fw-medium">
+                                        <i class="fas fa-download me-1"></i>Download PDF
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="gf-upload-box mt-2 bg-white">
+                                <div>
+                                    <div class="fw-medium small"><i class="fas fa-file-shield text-success me-1"></i>Upload Signed Reporting Document <span class="gf-req">*</span></div>
+                                    <div class="gf-file-name" id="fn_reporting_file">Required &bull; Encrypted on upload (Max 10MB)</div>
+                                </div>
+                                <label class="gf-upload-btn">
+                                    <i class="fas fa-arrow-up-from-bracket"></i> Upload Completed File
+                                    <input type="file" name="reporting_file" class="d-none gf-file-input" data-target="fn_reporting_file" accept=".pdf,.jpg,.jpeg,.png,.webp,.doc,.docx" required>
+                                </label>
+                            </div>
                         </div>
 
                         <div class="row g-3 pt-2">
@@ -1469,7 +1681,7 @@ $prefillEmail = $_SESSION['ONBOARDING_PREFILL_EMAIL'] ?? '';
                                 <input type="date" name="signature_date" class="gf-input" value="<?= date('Y-m-d'); ?>" required>
                             </div>
                         </div>
-                        <div class="gf-error-msg"><i class="fas fa-circle-exclamation"></i> Please check all four policy declarations and provide your electronic signature.</div>
+                        <div class="gf-error-msg"><i class="fas fa-circle-exclamation"></i> Please upload all four completed onboarding documents and provide your electronic signature.</div>
                     </div>
 
                     <!-- 12. Driver's license -->
@@ -1658,6 +1870,8 @@ $prefillEmail = $_SESSION['ONBOARDING_PREFILL_EMAIL'] ?? '';
                         if (!groupChecked) cardValid = false;
                     } else if (inp.type === 'checkbox') {
                         if (!inp.checked) cardValid = false;
+                    } else if (inp.type === 'file') {
+                        if (!inp.files || inp.files.length === 0) cardValid = false;
                     } else {
                         if (!inp.value.trim() || !inp.checkValidity()) cardValid = false;
                     }

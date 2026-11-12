@@ -193,7 +193,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $fStmt->execute([$id]);
             $fRow = $fStmt->fetch();
             if ($fRow) {
-                $fileCols = ['gov_id_file', 'ssn_file', 'background_check_file', 'fwa_certificate_file', 'credential_file', 'direct_deposit_file', 'w4_file', 'i9_file', 'drivers_license_file', 'drivers_insurance_file'];
+                $fileCols = [
+                    'gov_id_file', 'ssn_file', 'background_check_file', 'fwa_certificate_file',
+                    'credential_file', 'direct_deposit_file', 'w4_file', 'i9_file',
+                    'policy_declaration_file', 'compliance_file', 'policy_procedures_file', 'reporting_file',
+                    'drivers_license_file', 'drivers_insurance_file'
+                ];
                 foreach ($fileCols as $col) {
                     if (!empty($fRow[$col])) {
                         care_delete_vault_file((string) $fRow[$col]);
@@ -556,6 +561,10 @@ function formatObStatusLabel($status)
                             'direct_deposit_file' => '7. Direct Deposit / Voided Check',
                             'w4_file' => '8. W-4 Form',
                             'i9_file' => '9. I-9 Form',
+                            'policy_declaration_file' => '11a. Policy Declaration',
+                            'compliance_file' => '11b. Compliance',
+                            'policy_procedures_file' => '11c. Policy & Procedures',
+                            'reporting_file' => '11d. Reporting',
                             'drivers_license_file' => '12. Driver\'s License',
                             'drivers_insurance_file' => '13. Driver\'s Insurance',
                         ];
@@ -610,7 +619,7 @@ function formatObStatusLabel($status)
                             </td>
                             <td>
                                 <span class="badge bg-light text-dark border fw-semibold">
-                                    <i class="fas fa-file-shield text-success me-1"></i><?= count($attachedFiles); ?> / 10
+                                    <i class="fas fa-file-shield text-success me-1"></i><?= count($attachedFiles); ?> / 14
                                     encrypted
                                 </span>
                             </td>

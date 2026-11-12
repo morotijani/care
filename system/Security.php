@@ -822,5 +822,112 @@ function ensure_onboarding_security_schema(\PDO $db): void
             // Will retry safely on next load if table wasn't ready
         }
     }
+
+    // Add the 4 signed final-onboarding document columns (Item 11 uploads) if not yet present
+    if (care_get_onboarding_setting($db, 'schema_migrated_v3') !== '1') {
+        $newFileCols = [
+            'policy_declaration_file' => "ALTER TABLE `care_staff_onboarding` ADD COLUMN `policy_declaration_file` varchar(255) DEFAULT NULL AFTER `policy_declaration`",
+            'compliance_file'         => "ALTER TABLE `care_staff_onboarding` ADD COLUMN `compliance_file` varchar(255) DEFAULT NULL AFTER `compliance_agreed`",
+            'policy_procedures_file'  => "ALTER TABLE `care_staff_onboarding` ADD COLUMN `policy_procedures_file` varchar(255) DEFAULT NULL AFTER `policy_procedures_agreed`",
+            'reporting_file'          => "ALTER TABLE `care_staff_onboarding` ADD COLUMN `reporting_file` varchar(255) DEFAULT NULL AFTER `reporting_agreed`",
+        ];
+        foreach ($newFileCols as $colName => $alterSql) {
+            try {
+                $chk = $db->query("SHOW COLUMNS FROM `care_staff_onboarding` LIKE '$colName'")->fetch();
+                if (!$chk) {
+                    $db->exec($alterSql);
+                }
+            } catch (\Throwable $e) {
+                // Ignore if column already exists
+            }
+        }
+        care_set_onboarding_setting($db, 'schema_migrated_v3', '1');
+    }
+}
+
+/**
+ * Resolve one of the 6 official blank onboarding PDF templates from assets/media/documents/
+ */
+function care_resolve_onboarding_template(string $key): ?array
+{
+    $docsDir = dirname(__DIR__) . DIRECTORY_SEPARATOR . 'assets' . DIRECTORY_SEPARATOR . 'media' . DIRECTORY_SEPARATOR . 'documents';
+    if (!is_dir($docsDir)) {
+        return null;
+    }
+
+    $catalog = [
+        'w4' => [
+            'exact'         => 'W-4 . Employee’s Withholding Certificate.pdf',
+            'prefix'        => 'w-4',
+            'download_name' => 'W-4_Employees_Withholding_Certificate.pdf',
+            'title'         => 'Form W-4 — Employee’s Withholding Certificate',
+        ],
+        'i9' => [
+            'exact'         => 'Form I-9, Employment Eligibility Verification.pdf',
+            'prefix'        => 'form i-9',
+            'download_name' => 'Form_I-9_Employment_Eligibility_Verification.pdf',
+            'title'         => 'Form I-9 — Employment Eligibility Verification',
+        ],
+        'policy_declaration' => [
+            'exact'         => 'Policy Declaration - Care That Feels Like Home.pdf',
+            'prefix'        => 'policy declaration',
+            'download_name' => 'Policy_Declaration_Care_That_Feels_Like_Home.pdf',
+            'title'         => 'Policy Declaration — Care That Feels Like Home',
+        ],
+        'compliance' => [
+            'exact'         => 'Compliance - Care That Feels Like Home.pdf',
+            'prefix'        => 'compliance',
+            'download_name' => 'Compliance_Care_That_Feels_Like_Home.pdf',
+            'title'         => 'Compliance — Care That Feels Like Home',
+        ],
+        'policy_procedures' => [
+            'exact'         => 'Policy and Procedures  - Care That Feels Like Home.pdf',
+            'prefix'        => 'policy and procedures',
+            'download_name' => 'Policy_and_Procedures_Care_That_Feels_Like_Home.pdf',
+            'title'         => 'Policy and Procedures — Care That Feels Like Home',
+        ],
+        'reporting' => [
+            'exact'         => 'Report - Care That Feels Like Home.pdf',
+            'prefix'        => 'report -',
+            'download_name' => 'Reporting_Care_That_Feels_Like_Home.pdf',
+            'title'         => 'Reporting — Care That Feels Like Home',
+        ],
+    ];
+
+    if (!isset($catalog[$key])) {
+        return null;
+    }
+
+    $entry = $catalog[$key];
+    $exactPath = $docsDir . DIRECTORY_SEPARATOR . $entry['exact'];
+    if (is_file($exactPath) && is_readable($exactPath)) {
+        return [
+            'path'          => $exactPath,
+            'download_name' => $entry['download_name'],
+            'title'         => $entry['title'],
+        ];
+    }
+
+    // Fallback scan for cross-OS Unicode filename differences (e.g. curly apostrophe on Linux vs Windows)
+    $files = @scandir($docsDir);
+    if (is_array($files)) {
+        foreach ($files as $f) {
+            if ($f === '.' || $f === '..') {
+                continue;
+            }
+            if (stripos($f, $entry['prefix']) === 0 && strtolower(pathinfo($f, PATHINFO_EXTENSION)) === 'pdf') {
+                $candidate = $docsDir . DIRECTORY_SEPARATOR . $f;
+                if (is_file($candidate) && is_readable($candidate)) {
+                    return [
+                        'path'          => $candidate,
+                        'download_name' => $entry['download_name'],
+                        'title'         => $entry['title'],
+                    ];
+                }
+            }
+        }
+    }
+
+    return null;
 }
 
